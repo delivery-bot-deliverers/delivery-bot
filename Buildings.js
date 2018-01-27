@@ -85,6 +85,7 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 			mePos = 0;
 		}
 		var p =	game.add.sprite(X, Y, bgSprites[mePos]);	
+		p.inputEnabled = false;
 	}
 
 	var plooty = [plat,plat2,plat2,plat2,plat2,plat2,plat2];
