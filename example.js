@@ -27,6 +27,9 @@ function preload() {
 
     game.load.image('wallL', 'assets/Wall1_LeftSide.png');
     game.load.image('wallR', 'assets/Wall1_RightSide.png');
+
+    game.load.image('wallB', 'assets/Wall1_Background.png');
+    game.load.image('wallB2', 'assets/Wall1_Background1.png');
 }
 
 
@@ -43,7 +46,8 @@ function create() {
     ground.scale.setTo(10, 2);
     ground.body.immovable = true;
 
-    MakePlatform(['platL','platM','platR','wallR','wallL'], game, platforms);
+    MakePlatform(['platL','platM','platR','wallR','wallL'],['wallB','wallB2'],  game, platforms);
+    game.world.bringToTop(platforms); 
 
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
@@ -56,8 +60,7 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-
-game.camera.follow(player); 	
+    game.camera.follow(player); 	
     stars = game.add.group();
     stars.enableBody = true;
     for (let i = 0; i < 12; i++) {

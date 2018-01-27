@@ -2,8 +2,6 @@
 
 function MakeBlock(sprites, parentGroup, X, Y, pos)
 {
-	var p= 	parentGroup.create(X, Y, sprites[pos]);	
-	p.body.immovable = true;
 }
 
 function TileRow(amount, X, Y, BlockSize, Blocker) 
@@ -19,28 +17,36 @@ function TileRow(amount, X, Y, BlockSize, Blocker)
 	}	
 }
 
-function PlatformParser(platformArray, X, Y, BlockSize, Tile) 
+function PlatformParser(platformArray, X, Y, BlockSize, Tile, TileBG) 
 {
 	for(var i = 0 ; i< platformArray.length; i++) 
 	{
 		for(var ii = 0 ; ii < platformArray[i].length; ii++) 
 		{
+			var pos =0; 
+			if(i+1<platformArray.length && platformArray[i+1][ii] > 0){
+				if( Math.random() > 0.7) 
+					pos =1;	
+			}
+			TileBG(X + (ii * BlockSize), Y + (i * BlockSize),pos);
+
 			if(platformArray[i][ii] != 0)
 				Tile(X + (ii * BlockSize), Y + (i * BlockSize),platformArray[i][ii]-1);
+
 		}
 	}
 }
 
-function placePlatformTiles(Platforms,X,Y,BlockSize,Tile) 
+function placePlatformTiles(Platforms,X,Y,BlockSize,Tile,TileBG) 
 {
 	for(var i = 0; i < Platforms.length; i++)
 	{
-		PlatformParser(Platforms[i],X,Y,25,Tile);
+		PlatformParser(Platforms[i],X,Y,25,Tile,TileBG );
 		Y = Y - (Platforms[i].length * BlockSize); 
 	}
 }
 
-function MakePlatform(sprites, game, platforms ) 
+function MakePlatform(sprites, bgSprites, game, platforms ) 
 {
 	var plat = 
 		[
@@ -64,17 +70,26 @@ function MakePlatform(sprites, game, platforms )
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		]; 
 
+	var MakeSprites = function(X,Y,Pos)
+	{
+		var p =	platforms.create(X, Y, sprites[Pos]);	
+		p.body.immovable = true;
+	}
+	var MakeBG = function(X,Y,Pos)
+	{
+		var mePos = Pos;
+		if(mePos >0){
+			mePos = 1;
+		}
+		if(mePos <0){
+			mePos = 0;
+		}
+		var p =	game.add.sprite(X, Y, bgSprites[mePos]);	
+	}
+
 	var plooty = [plat,plat2,plat2,plat2,plat2,plat2,plat2];
 	var plooty2 = [plat,plat2];
-	placePlatformTiles(plooty,300,2700,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);} );
-	placePlatformTiles(plooty2,700,2700,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);} );
 
-   // PlatformParser(plat,300,350,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
-   // PlatformParser(plat,300,150,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
-
-   // const ledgeA = platforms.create(400, 400, sprite);
-   // ledgeA.body.immovable = true;
-
-   // const ledgeB = platforms.create(-150, 250, sprite);
-   // ledgeB.body.immovable = true;
+	placePlatformTiles(plooty,300,2700,25, MakeSprites,MakeBG);
+	placePlatformTiles(plooty2,700,2700,25, MakeSprites,MakeBG);
 }
