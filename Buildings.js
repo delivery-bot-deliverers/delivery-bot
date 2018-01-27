@@ -31,21 +31,44 @@ function PlatformParser(platformArray, X, Y, BlockSize, Tile)
 	}
 }
 
+function placePlatformTiles(Platforms,X,Y,BlockSize,Tile) 
+{
+	for(var i = 0; i < Platforms.length; i++)
+	{
+		PlatformParser(Platforms[i],X,Y,25,Tile);
+		Y = Y - (Platforms[i].length * BlockSize); 
+	}
+}
+
 function MakePlatform(sprites, game, platforms ) 
 {
-    var plat = 
-	    [
-	    [0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-	    [0,0,0,0,0,1,2,2,2,2,3,0,0,2],
-	    [0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-	    [0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-	    [0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-	    [0,0,0,0,0,0,0,1,2,2,2,2,2,2],
-	    [0,0,0,0,0,0,0,0,0,0,0,0,0,2],
-	    ]
+	var plat = 
+		[
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[0,0,0,0,0,1,2,2,2,2,3,0,0,4],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[0,0,0,0,0,0,0,1,2,2,2,2,2,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		];
 
-    PlatformParser(plat,300,300,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
-    PlatformParser(plat,300,0,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
+	var plat2 = 
+		[
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,1,2,2,2,2,3,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
+	var plooty = [plat,plat2,plat2];
+	placePlatformTiles(plooty,300,350,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);} );
+
+   // PlatformParser(plat,300,350,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
+   // PlatformParser(plat,300,150,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
 
    // const ledgeA = platforms.create(400, 400, sprite);
    // ledgeA.body.immovable = true;

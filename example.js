@@ -24,6 +24,9 @@ function preload() {
     game.load.image('platL', 'assets/Plat1_LeftSide.png');
     game.load.image('platM', 'assets/Plat1_Mid.png');
     game.load.image('platR', 'assets/Plat1_RightSide.png');
+
+    game.load.image('wallL', 'assets/Wall1_LeftSide.png');
+    game.load.image('wallR', 'assets/Wall1_RightSide.png');
 }
 
 
@@ -39,7 +42,7 @@ function create() {
     ground.scale.setTo(2, 2);
     ground.body.immovable = true;
 
-    MakePlatform(['platL','platM','platR'], game, platforms);
+    MakePlatform(['platL','platM','platR','wallR','wallL'], game, platforms);
 
     objectives = new Objectives(game, [
         [-1000, 300], // off screen!
