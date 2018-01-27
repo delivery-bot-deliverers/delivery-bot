@@ -73,11 +73,14 @@ function create() {
         fontSize: '32px', fill: '#000'
     });
 
-    objectives = new Objectives(game, [
-        [1000, 300],
-        [1200, 300],
-        [1400, 300],
-        [500, 300],
+    objectives = new Objectives(game);
+    objectives.populate([
+        [
+            new Phaser.Point(1000, 300),
+            new Phaser.Point(1200, 300),
+            new Phaser.Point(1400, 300),
+            new Phaser.Point(500, 300)
+        ]
     ]);
 
 }

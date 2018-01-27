@@ -82,16 +82,10 @@ class Indicator {
 }
 
 class Objectives {
-    constructor(game, coordinates) {
+    constructor(game) {
         this.group = game.add.group();
         this.group.enableBody = true;
-        coordinates.forEach(([x, y]) => {
-            const child = this.group.create(x, y, 'star');
-            child.body.gravity.y = 20;
-            child.body.bounce.y = 1;
-        });
         this.indicator = new Indicator(game);
-        this.indicator.setTarget(this.group.children[0]);
     }
 
     update(game) {
@@ -101,6 +95,23 @@ class Objectives {
 
         this.indicator.setTarget(this.group.children[0]);
         this.indicator.update(game);
+    }
+
+    // Takes objective locations in ascending categories of difficulty.
+    // Array[Array[Phaser.Point]].
+    // Creates sprites in this.group with difficulties attached
+    populate(pointsByCategory) {
+        this.group.children.forEach(sprite => {
+            sprite.destroy();
+        });
+        pointsByCategory.forEach(category => {
+            category.forEach((point, difficulty) => {
+                const child = this.group.create(point.x, point.y, 'star');
+                child.body.gravity.y = 20;
+                child.body.bounce.y = 1;
+                child.difficulty = difficulty;
+            });
+        });
     }
 
     collidePlayer() {
