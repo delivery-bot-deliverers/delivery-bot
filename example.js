@@ -6,12 +6,6 @@ const game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
     update: update
 });
 
-function preload() {
-    game.load.image('sky', 'assets/sky.png');
-    game.load.image('ground', 'assets/platform.png');
-    game.load.image('star', 'assets/star.png');
-    game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
-}
 
 var platforms;
 var player;
@@ -20,23 +14,24 @@ var stars;
 var score = 0;
 var scoreText;
 
+function preload() {
+    game.load.image('sky', 'assets/sky.png');
+    game.load.image('ground', 'assets/platform.png');
+    game.load.image('star', 'assets/star.png');
+    game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+
+    game.load.image('platL', 'assets/Plat1_LeftSide.png');
+    game.load.image('platM', 'assets/Plat1_Mid.png');
+    game.load.image('platR', 'assets/Plat1_RightSide.png');
+}
+
+
 function create() {
     game.add.sprite(0, 0, 'star');
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
 
-    platforms = game.add.group();
-    platforms.enableBody = true;
-
-    const ground = platforms.create(0, game.world.height - 64, 'ground');
-    ground.scale.setTo(2, 2);
-    ground.body.immovable = true;
-
-    const ledgeA = platforms.create(400, 400, 'ground');
-    ledgeA.body.immovable = true;
-
-    const ledgeB = platforms.create(-150, 250, 'ground');
-    ledgeB.body.immovable = true;
+    platform('platM');
 
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
