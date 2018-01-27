@@ -13,6 +13,7 @@ var cursors;
 var stars;
 var score = 0;
 var scoreText;
+var objectives;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -31,9 +32,17 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
 
+    objectives = new Objectives(game, [
+        [-1000, 300], // off screen!
+        [100, 300],
+        [300, 300],
+        [500, 300],
+        [700, 300],
+        [1000, 300] // off screen!
+    ]);
+
     platforms = game.add.group();
     platforms.enableBody = true;
-
 
     MakePlatform(['platL','platM','platR'], game, platforms);
 
