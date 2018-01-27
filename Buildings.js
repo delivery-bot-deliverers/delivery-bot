@@ -49,7 +49,7 @@ function MakePlatform(sprites, game, platforms )
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[0,0,0,0,0,0,0,1,2,2,2,2,2,0],
+		[0,0,0,0,0,0,0,1,2,2,2,2,2,4],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		];
 
@@ -64,8 +64,10 @@ function MakePlatform(sprites, game, platforms )
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		]; 
 
-	var plooty = [plat,plat2,plat2];
-	placePlatformTiles(plooty,300,350,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);} );
+	var plooty = [plat,plat2,plat2,plat2,plat2,plat2,plat2];
+	var plooty2 = [plat,plat2];
+	placePlatformTiles(plooty,300,2700,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);} );
+	placePlatformTiles(plooty2,700,2700,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);} );
 
    // PlatformParser(plat,300,350,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
    // PlatformParser(plat,300,150,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});

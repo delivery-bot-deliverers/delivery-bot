@@ -34,12 +34,13 @@ function create() {
     game.add.sprite(0, 0, 'star');
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
+    game.world.setBounds(0,0,3000,3000); 
 
     platforms = game.add.group();
     platforms.enableBody = true;
 
     var ground = platforms.create(0, game.world.height - 64, "ground");
-    ground.scale.setTo(2, 2);
+    ground.scale.setTo(10, 2);
     ground.body.immovable = true;
 
     MakePlatform(['platL','platM','platR','wallR','wallL'], game, platforms);
@@ -64,6 +65,8 @@ function create() {
 
     cursors = game.input.keyboard.createCursorKeys();
 
+
+game.camera.follow(player); 	
     stars = game.add.group();
     stars.enableBody = true;
     for (let i = 0; i < 12; i++) {
