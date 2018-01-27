@@ -52,7 +52,7 @@ function create() {
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
     player.body.bounce.y = 0.2;
-    player.body.gravity.y = 300;
+    player.body.gravity.y = 1500;
     player.body.collideWorldBounds = true;
 
     player.animations.add('left', [0, 1, 2, 3], 10, true);
@@ -65,7 +65,7 @@ function create() {
     stars.enableBody = true;
     for (let i = 0; i < 12; i++) {
         const star = stars.create(70 * i, 0, 'star');
-        star.body.gravity.y = 6;
+        star.body.gravity.y = 15;
         star.body.bounce.y = 0.7 + Math.random() * 0.2;
     }
 
@@ -98,18 +98,25 @@ function update() {
     objectives.update(game);
 
     if (cursors.left.isDown) {
-        player.body.velocity.x = -150;
+        if(player.body.acceleration.x > 0) 
+        	player.body.velocity.x = -100; 
+
+        player.body.acceleration.x = -350;
         player.animations.play('left');
     } else if (cursors.right.isDown) {
-        player.body.velocity.x = 150;
+        if(player.body.acceleration.x < 0) 
+        	player.body.velocity.x = 100; 
+
+        player.body.acceleration.x = 350;
         player.animations.play('right');
     } else {
+	player.body.acceleration.x = 0;
         player.body.velocity.x = 0;
         player.animations.stop();
         player.frame = 4;
     }
 
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
-        player.body.velocity.y = -300;
+        player.body.velocity.y = -600;
     }
 }
