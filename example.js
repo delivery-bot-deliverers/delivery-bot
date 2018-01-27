@@ -48,7 +48,7 @@ function create() {
 
     MakePlatform(['platL','platM','platR','wallR','wallL'],['wallB','wallB2'],  game, platforms);
     game.world.bringToTop(platforms); 
-
+	
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
     player.body.bounce.y = 0.2;
