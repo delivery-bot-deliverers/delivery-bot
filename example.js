@@ -32,6 +32,15 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
 
+    platforms = game.add.group();
+    platforms.enableBody = true;
+
+    var ground = platforms.create(0, game.world.height - 64, "ground");
+    ground.scale.setTo(2, 2);
+    ground.body.immovable = true;
+
+    MakePlatform(['platL','platM','platR'], game, platforms);
+
     objectives = new Objectives(game, [
         [-1000, 300], // off screen!
         [100, 300],
@@ -40,11 +49,6 @@ function create() {
         [700, 300],
         [1000, 300] // off screen!
     ]);
-
-    platforms = game.add.group();
-    platforms.enableBody = true;
-
-    MakePlatform(['platL','platM','platR'], game, platforms);
 
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);

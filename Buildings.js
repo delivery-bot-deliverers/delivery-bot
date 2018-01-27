@@ -29,7 +29,7 @@ function MakePlatform(sprites, game, platforms )
     ground.scale.setTo(2, 2);
     ground.body.immovable = true;
 
-    TileRow(10,400,400,25,function(X,Y,Pos){MakeBlock(sprites,game,X,Y,Pos);});
+    TileRow(10,400,400,25,function(X,Y,Pos){MakeBlock(sprites,platforms,X,Y,Pos);});
 
    // const ledgeA = platforms.create(400, 400, sprite);
    // ledgeA.body.immovable = true;
