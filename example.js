@@ -10,7 +10,6 @@ const game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
 var platforms;
 var player;
 var cursors;
-var stars;
 var score = 0;
 var scoreText;
 var objectives;
@@ -61,13 +60,6 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
 
     game.camera.follow(player); 	
-    stars = game.add.group();
-    stars.enableBody = true;
-    for (let i = 0; i < 12; i++) {
-        const star = stars.create(70 * i, 0, 'star');
-        star.body.gravity.y = 6;
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
 
     scoreText = game.add.text(16, 16, 'score: 0', {
         fontSize: '32px', fill: '#000'
@@ -85,17 +77,8 @@ function create() {
 
 }
 
-function collectStar(player, star) {
-    star.kill();
-
-    score += 10;
-    scoreText.text = 'Score: ' + score;
-}
-
 function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(stars, platforms);
-    game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
 
     objectives.update(game);
