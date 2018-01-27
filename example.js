@@ -11,7 +11,6 @@ var platforms;
 var player;
 var cursors;
 var score = 0;
-var scoreText;
 var objectives;
 
 function preload() {
@@ -60,10 +59,6 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
 
     game.camera.follow(player); 	
-
-    scoreText = game.add.text(16, 16, 'score: 0', {
-        fontSize: '32px', fill: '#000'
-    });
 
     objectives = new Objectives(game);
     objectives.populate([
