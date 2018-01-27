@@ -1,30 +1,39 @@
 
 
-function TileRow(sprite, group, amount, X, Y) 
+function MakeBlock(sprites, parentGroup, X, Y, pos)
 {
-	var platform = group.add.group();	
+	var p= 	parentGroup.create(X, Y, sprites[pos]);	
+	p.body.immovable = true;
+}
+
+function TileRow(amount, X, Y, BlockSize, Blocker) 
+{
 	for(var i = 0 ; i< amount; i++) 
 	{
-		var p= 	platform.create(X, Y, sprite);	
-		p.body.immovable = true;
-		X = X + 25; 
+		var pos;
+		if(i ==0) pos = 0; 
+		else if(i == amount -1)pos =2
+		else pos = 1; 
+		Blocker(X,Y,pos);
+		X = X + BlockSize; 
 	}	
 }
 
-function MakePlatform(sprite, game) 
+function PlatformParser(platformArray) 
 {
-    var platforms = game.add.group();
-    platforms.enableBody = true;
+}
 
-    const ground = platforms.create(0, game.world.height - 64, sprite);
+function MakePlatform(sprites, game, platforms ) 
+{
+    var ground = platforms.create(0, game.world.height - 64, "ground");
     ground.scale.setTo(2, 2);
     ground.body.immovable = true;
 
-	TileRow
+    TileRow(10,400,400,25,function(X,Y,Pos){MakeBlock(sprites,game,X,Y,Pos);});
 
-    const ledgeA = platforms.create(400, 400, sprite);
-    ledgeA.body.immovable = true;
+   // const ledgeA = platforms.create(400, 400, sprite);
+   // ledgeA.body.immovable = true;
 
-    const ledgeB = platforms.create(-150, 250, sprite);
-    ledgeB.body.immovable = true;
+   // const ledgeB = platforms.create(-150, 250, sprite);
+   // ledgeB.body.immovable = true;
 }

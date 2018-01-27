@@ -31,7 +31,11 @@ function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
 
-    MakePlatform('platM', game);
+    platforms = game.add.group();
+    platforms.enableBody = true;
+
+
+    MakePlatform(['platL','platM','platR'], game, platforms);
 
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
