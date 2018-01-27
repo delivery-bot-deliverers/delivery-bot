@@ -10,9 +10,7 @@ const game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
 var platforms;
 var player;
 var cursors;
-var stars;
 var score = 0;
-var scoreText;
 var objectives;
 
 function preload() {
@@ -46,12 +44,12 @@ function create() {
     ground.scale.setTo(10, 2);
     ground.body.immovable = true;
 
-    MakePlatform(['platL','platM','platR','wallR','wallL'],['wallB','wallB2'],  game, platforms);
+    var result = MakePlatform(['platL','platM','platR','wallR','wallL'],['wallB','wallB2'],  game, platforms);
     game.world.bringToTop(platforms); 
 	
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
-    player.body.bounce.y = 0.2;
+    player.body.bounce.y = 0.5;
     player.body.gravity.y = 1500;
     player.body.collideWorldBounds = true;
 
@@ -61,38 +59,12 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
 
     game.camera.follow(player); 	
-    stars = game.add.group();
-    stars.enableBody = true;
-    for (let i = 0; i < 12; i++) {
-        const star = stars.create(70 * i, 0, 'star');
-        star.body.gravity.y = 15;
-        star.body.bounce.y = 0.7 + Math.random() * 0.2;
-    }
-
-    scoreText = game.add.text(16, 16, 'score: 0', {
-        fontSize: '32px', fill: '#000'
-    });
-
-    objectives = new Objectives(game, [
-        [1000, 300],
-        [1200, 300],
-        [1400, 300],
-        [500, 300],
-    ]);
-
-}
-
-function collectStar(player, star) {
-    star.kill();
-
-    score += 10;
-    scoreText.text = 'Score: ' + score;
+    objectives = new Objectives(game);
+    objectives.populate(result);
 }
 
 function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.collide(stars, platforms);
-    game.physics.arcade.overlap(player, stars, collectStar, null, this);
     game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
 
     objectives.update(game);
