@@ -44,15 +44,6 @@ function create() {
 
     MakePlatform(['platL','platM','platR','wallR','wallL'], game, platforms);
 
-    objectives = new Objectives(game, [
-        [-1000, 300], // off screen!
-        [100, 300],
-        [300, 300],
-        [500, 300],
-        [700, 300],
-        [1000, 300] // off screen!
-    ]);
-
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
     player.body.bounce.y = 0.2;
@@ -75,6 +66,16 @@ function create() {
     scoreText = game.add.text(16, 16, 'score: 0', {
         fontSize: '32px', fill: '#000'
     });
+
+    objectives = new Objectives(game, [
+        [-1000, 300], // off screen!
+        [100, 300],
+        [300, 300],
+        [500, 300],
+        [700, 300],
+        [1000, 300] // off screen!
+    ]);
+
 }
 
 function collectStar(player, star) {
@@ -88,6 +89,9 @@ function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
     game.physics.arcade.collide(stars, platforms);
     game.physics.arcade.overlap(player, stars, collectStar, null, this);
+    game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
+
+    objectives.update(game);
 
     if (cursors.left.isDown) {
         player.body.velocity.x = -150;
