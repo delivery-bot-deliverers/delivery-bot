@@ -28,6 +28,8 @@ function preload() {
 
     game.load.image('wallB', 'assets/Wall1_Background.png');
     game.load.image('wallB2', 'assets/Wall1_Background1.png');
+
+    game.load.image('Rocket', 'assets/Rocket.png');
 }
 
 
@@ -52,10 +54,13 @@ function create() {
     player.body.bounce.y = 0.5;
     player.body.gravity.y = 1500;
     player.body.collideWorldBounds = true;
-
+    
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8,], 10, true);
-
+    
+    var booster = new Upgrade_Booster(game, player,'Rocket');  
+    player.upgrades = [booster];
+	
     cursors = game.input.keyboard.createCursorKeys();
 
     game.camera.follow(player); 	
@@ -68,6 +73,9 @@ function update() {
     game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
 
     objectives.update(game);
+    for(var i = 0; i < player.upgrades.length; i++)  {
+	    player.upgrades[i].update();
+    } 
 
     if (cursors.left.isDown) {
         if(player.body.acceleration.x > 0) 
