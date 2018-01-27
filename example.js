@@ -71,12 +71,10 @@ game.camera.follow(player);
     });
 
     objectives = new Objectives(game, [
-        [-1000, 300], // off screen!
-        [100, 300],
-        [300, 300],
+        [1000, 300],
+        [1200, 300],
+        [1400, 300],
         [500, 300],
-        [700, 300],
-        [1000, 300] // off screen!
     ]);
 
 }

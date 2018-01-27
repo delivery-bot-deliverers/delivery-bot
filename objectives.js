@@ -11,12 +11,15 @@ const clamp = function clamp(num, low, high) {
 class Indicator {
     constructor(game) {
         this._gfx = game.add.graphics(0, 0);
+        this._gfx.fixedToCamera = true;
+
         const width = 3;
         const color = 0xFF0000;
-        const alpha = 0.5;
+        const alpha = 1;
         this._gfx.lineStyle(width, color, alpha);
 
         this.radius = 20;
+        this.height_above_player = 40;
 
         this._gfx.moveTo(0, -this.radius);
         this._gfx.lineTo(1.5 * this.radius, 0);
@@ -34,21 +37,43 @@ class Indicator {
             return;
         }
 
-        const spacing = this.radius + 0.8 * this.radius;
-        this._gfx.x = clamp(
-            this._target.centerX,
-            spacing,
-            game.scale.width - spacing
-        );
-        this._gfx.y = clamp(
-            this._target.centerY,
-            spacing,
-            game.scale.height - spacing
-        );
+        // in viewport coordinates
+        const targetX = this._target.centerX - game.camera.x;
+        const targetY = this._target.centerY - game.camera.y;
+        const targetTop = this._target.y - game.camera.y;
 
-        const deltaX = this._target.centerX - this._gfx.x;
-        const deltaY = this._target.centerY - this._gfx.y;
-        this._gfx.rotation = Math.atan2(deltaY, deltaX);
+        const spacing = 1.8 * this.radius;
+
+        const left = spacing;
+        const right = game.scale.width - spacing;
+        const thetop = spacing;
+        const bottom = game.scale.height - spacing;
+
+        if (left < targetX && targetX < right && thetop < targetY && targetY < bottom) {
+            this._gfx.cameraOffset = new Phaser.Point(
+                targetX,
+                targetTop - this.height_above_player
+            );
+            this._gfx.rotation = Math.PI / 2;
+
+        } else {
+            this._gfx.cameraOffset = new Phaser.Point(
+                clamp(
+                    targetX,
+                    left,
+                    right
+                ),
+                clamp(
+                    targetY,
+                    thetop,
+                    bottom
+                )
+            );
+
+            const deltaX = this._target.centerX - this._gfx.x;
+            const deltaY = this._target.centerY - this._gfx.y;
+            this._gfx.rotation = Math.atan2(deltaY, deltaX);
+        }
     }
 
     setTarget(target) {
