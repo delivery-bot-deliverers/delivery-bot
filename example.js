@@ -1,6 +1,6 @@
 /// Some stuff to work off of based on the getting started tutorial
 
-const game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+const game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {
     preload: preload,
     create: create,
     update: update
@@ -49,6 +49,8 @@ function preload() {
 
 
 function create() {
+
+    game.stage.backgroundColor = '#9ce5fb';
 
     deliver_sound = game.add.audio('Deliver');
     drop_bomb_sound = game.add.audio('DropBomb');
