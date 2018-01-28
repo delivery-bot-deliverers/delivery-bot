@@ -238,5 +238,4 @@ function update() {
     if (player.body.velocity.y > 0) {
         player.falling = true;
     }
-
 }
