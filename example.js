@@ -25,6 +25,7 @@ var get_job_sound;
 var jump_sound;
 var land_sound;
 var hud;
+var store;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -191,6 +192,9 @@ function create() {
     objectives.registerDoneCallback(() =>
         showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
     );
+
+    store = new Store(game, hud);
+    store.setVisible(true);
 }
 
 function update() {
