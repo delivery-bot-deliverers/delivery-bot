@@ -91,7 +91,7 @@ class MissionGiver {
         game.physics.arcade.enable(this.sprite);
         this.sprite.animations.add('idle', [0, 1], 4, true);
         this.sprite.animations.play('idle');
-        this._exc = game.add.sprite(x, y - 40, 'exclamation');
+        this._exc = game.add.sprite(x + 4, y - 20, 'exclamation');
         this._exc_timer = game.time.create(false);
         this._exc_timer.loop(300, () => {
             this._exc.visible = !this._exc.visible;
