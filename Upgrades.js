@@ -47,18 +47,36 @@ class Upgrade_Booster{
 				if(this.offang < 0){this.Adding = true;}
 				}
 		}, this);
+		this.count = 0; 
+ 		this.Timer.start();
+	}
+
+	WaitBooster()
+	{
+		this.Timer = this.game.time.create(false);  
+
+		this.count = 200; 
+		this.Timer.loop(10, () =>{
+				this.count --; 
+				if(this.count <= 0 ) 
+				{
+				this.CanBoost = true; 
+				this.Timer.stop(); 
+				}
+		}, this);
 
  		this.Timer.start();
 	}
 
 	update(Key, cursors, press_Space){
-		if (Key.isDown && this.CanBoost){ 
+		if ( this.CanBoost){ 
 			this.startBooster();
 		}
 
-		if(press_Space.isDown && !this.CanBoost){
+		if(press_Space.isDown && !this.CanBoost && this.count <=0){
 			this.Timer.stop();
-			this.CanBoost = true; 
+			this.WaitBooster();
+
 			var yaccel = Math.cos(this.sprite.angle*Math.PI/180); 
 			var xaccel = Math.sin(this.sprite.angle*Math.PI/180); 
 
