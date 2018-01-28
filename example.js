@@ -109,16 +109,16 @@ function create() {
 
     hud = new Hud(game);
     hud.registerTimeUpCallback(() => {
+        const gfx = game.add.graphics(0, 0);
+        gfx.fixedToCamera = true;
+        gfx.beginFill(0xFF0000, 0.5);
+        gfx.drawRect(0, 0, game.scale.width, game.scale.height);
+
         const text = game.add.text(0, 0, 'GAME OVER', {'fill': '#220000'});
         text.fixedToCamera = true;
         text.fontSize = 100;
         text.cameraOffset.x = game.scale.width/2 - text.width/2;
         text.cameraOffset.y = game.scale.height/2 - text.height/2;
-
-        const gfx = game.add.graphics(0, 0);
-        gfx.fixedToCamera = true;
-        gfx.beginFill(0xFF0000, 0.5);
-        gfx.drawRect(0, 0, game.scale.width, game.scale.height);
 
         game.time.events.add(5000, () => {
             text.destroy();
