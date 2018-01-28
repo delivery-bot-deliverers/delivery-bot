@@ -104,7 +104,6 @@ function create() {
 
 function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
-
     if (hitPlatform && player.falling) {
         player.falling = false;
         land_sound.play();
@@ -133,27 +132,12 @@ function update() {
         player.body.acceleration.x = 350;
         player.animations.play('right');
 	player.facing = "Right";
-    }
-
-    if(hitPlatform && player.body.velocity.x != 0) {
-       if( player.body.velocity.x > 0 ) 
-	       player.body.acceleration.x -= 100;
-       if( player.body.velocity.x < 0 ) 
-	       player.body.acceleration.x += 10-;
-    }
- if(player.body.velocity.x == 0 ) {
-        player.animations.stop();
-        player.frame = 4;
-    }
- 
-/*
- else {
+    } else {
 	player.body.acceleration.x = 0;
 	player.body.velocity.x = 0;
         player.animations.stop();
         player.frame = 4;
     }
-*/
 
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -600;
