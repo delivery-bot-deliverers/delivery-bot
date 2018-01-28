@@ -19,7 +19,7 @@ class Indicator {
         this._gfx.lineStyle(width, color, alpha);
 
         this.radius = 20;
-        this.height_above_player = 40;
+        this.height_above_player = 15;
 
         this._gfx.moveTo(0, -this.radius);
         this._gfx.lineTo(1.5 * this.radius, 0);
@@ -52,6 +52,7 @@ class Indicator {
         const thetop = spacing;
         const bottom = game.scale.height - spacing;
 
+
         if (left < targetX && targetX < right && thetop < targetY && targetY < bottom) {
             this._gfx.cameraOffset = new Phaser.Point(
                 targetX,
@@ -81,6 +82,12 @@ class Indicator {
 
     /// Note target may be set to null to hide indicator.
     setTarget(target) {
+
+	if(this._target !== null)
+	{
+		//this._target.animations.stop('target');
+		target.animations.play('target');
+	}
         this._target = target;
     }
 }
@@ -241,10 +248,14 @@ class Objectives {
         });
         pointsByCategory.forEach((category, difficulty) => {
             category.forEach(point => {
-                const child = this.group.create(point.x, point.y, 'star');
+                const child = this.group.create(point.x, point.y, 'objectiveDude1',2);
+		child.animations.add('target', [0, 1], 4, true);
+		child.body.gravity.y = 1500;
+		child.body.collideWorldBounds = true;
                 child.difficulty = difficulty;
             });
         });
+	return this.group;
     }
 
     // Compute this.route, the objectives that need to be visited in order.

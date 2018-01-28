@@ -8,6 +8,8 @@ var platforms;
 var Walls;
 var BreakWalls;
 
+var objDudes;
+
 var player;
 var cursors;
 var score = 0;
@@ -29,6 +31,8 @@ function preload() {
     game.load.image('ground', 'assets/platform.png');
     game.load.image('star', 'assets/star.png');
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
+
+    game.load.spritesheet('objectiveDude1', 'assets/Person_Objective1.png', 32, 64);
 
     game.load.image('platL', 'assets/Plat1_LeftSide.png');
     game.load.image('platM', 'assets/Plat1_Mid.png');
@@ -111,7 +115,9 @@ function create() {
     ground.scale.setTo(1000, 2);
     ground.body.immovable = true;
 
-    var result = MakePlatform(['platL','platM','platR','wallR','wallL','WallFloorL','WallFloorR','WallLBrk','WallRBrk'],['wallB','wallB2'],  game, platforms, Walls,BreakWalls);
+    var wallSprites=['platL','platM','platR','wallR','wallL','WallFloorL','WallFloorR','WallLBrk','WallRBrk']; 
+    var bgWallSprites = ['wallB','wallB2'];
+    var result = MakePlatform(wallSprites, bgWallSprites, game, platforms, Walls, BreakWalls);
     game.world.bringToTop(platforms); 
     game.world.bringToTop(Walls); 
     game.world.bringToTop(BreakWalls); 
@@ -130,21 +136,18 @@ function create() {
     Upgrades = [booster];
 	
     game.world.bringToTop(player); 
-
-    cursors = game.input.keyboard.createCursorKeys();
-	
     game.camera.follow(player); 	
-
-    press_Space =  game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); 
-    press_Z = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
     missiongiver = new MissionGiver(game, 200, 2872);
 
     objectives = new Objectives(game);
-    objectives.populate(result);
+    objDudes = objectives.populate(result);
+
+    cursors = game.input.keyboard.createCursorKeys();
+    press_Space =  game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); 
+    press_Z = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
     hud = new Hud(game);
-
     hud.registerTimeUpCallback(() =>
         showEndGameOverlay('GAME OVER', 5000, 0xFF0000, 0.5, '#220000')
     );
@@ -167,6 +170,8 @@ function update() {
 	var curVx =player.body.velocity.x;  
     const hitPlatform = game.physics.arcade.collide(player, platforms);
     const hitWall = game.physics.arcade.collide(player, Walls);
+
+    game.physics.arcade.collide(objDudes, platforms);
 
     if (hitPlatform && player.falling) {
         player.falling = false;
