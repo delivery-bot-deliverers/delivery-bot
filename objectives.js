@@ -82,12 +82,9 @@ class Indicator {
 
     /// Note target may be set to null to hide indicator.
     setTarget(target) {
-
-	if(this._target !== null)
-	{
-		//this._target.animations.stop('target');
+	if(target !== null)
 		target.animations.play('target');
-	}
+
         this._target = target;
     }
 }
@@ -272,6 +269,7 @@ class Objectives {
             category.forEach(point => {
                 const child = this.group.create(point.x, point.y, 'objectiveDude1',2);
 		child.animations.add('target', [0, 1], 4, true);
+		child.animations.add('rest', [2], 4, true);
 		child.body.gravity.y = 1500;
 		child.body.collideWorldBounds = true;
                 child.difficulty = difficulty;
@@ -321,6 +319,7 @@ class Objectives {
             if (this.route_cursor + 1 < this.route.length) {
                 this.route_cursor += 1;
                 this._collectCallback(objective, this.routedists[this.route_cursor]);
+		objective.animations.play('rest'); 
             } else {
                 this._doneCallback();
                 this.route_cursor = null;
