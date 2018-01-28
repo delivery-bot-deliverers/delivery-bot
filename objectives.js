@@ -177,8 +177,6 @@ class Objectives {
         pointsByCategory.forEach((category, difficulty) => {
             category.forEach(point => {
                 const child = this.group.create(point.x, point.y, 'star');
-                child.body.gravity.y = 20;
-                child.body.bounce.y = 1;
                 child.difficulty = difficulty;
             });
         });
