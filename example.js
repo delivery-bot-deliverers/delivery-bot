@@ -93,8 +93,12 @@ function create() {
 
 function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.overlap(player, objectives.group, objectives.collidePlayer, null, this);
-    game.physics.arcade.overlap(player, missiongiver.sprite, missiongiver.collidePlayer, null, missiongiver);
+    if (hitPlatform && player.falling) {
+        player.falling = false;
+        land_sound.play();
+    }
+
+    game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
 
     objectives.update(game);
     missiongiver.update(game);
@@ -120,5 +124,11 @@ function update() {
 
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -600;
+        jump_sound.play();
     }
+
+    if (player.body.velocity.y > 0) {
+        player.falling = true;
+    }
+
 }
