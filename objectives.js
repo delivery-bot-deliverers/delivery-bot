@@ -220,6 +220,7 @@ class Objectives {
         this.routedists = [];
         this.route_cursor = null;
         this._collectCallback = () => {};
+        this._doneCallback = () => {};
     }
 
     update(game) {
@@ -287,6 +288,7 @@ class Objectives {
                 this.route_cursor += 1;
                 this._collectCallback(this.routedists[this.route_cursor]);
             } else {
+                this._doneCallback();
                 this.route_cursor = null;
             }
         }
@@ -296,5 +298,9 @@ class Objectives {
     // the euclidean distance to the next goal.
     registerCollectCallback(callback) {
         this._collectCallback = callback;
+    }
+
+    registerDoneCallback(callback) {
+        this._doneCallback = callback;
     }
 }

@@ -53,8 +53,27 @@ function preload() {
     game.load.image('Smoke3', 'assets/Smoke3.png');
 }
 
-function create() {
+function showEndGameOverlay(thestring, duration, bgColorNum, bgColorAlpha, textColorStr) {
+    const gfx = game.add.graphics(0, 0);
+    gfx.fixedToCamera = true;
+    gfx.beginFill(bgColorNum, bgColorAlpha);
+    gfx.drawRect(0, 0, game.scale.width, game.scale.height);
 
+    const text = game.add.text(0, 0, thestring, {'fill': '#220000'});
+    text.fixedToCamera = true;
+    text.fontSize = 100;
+    text.cameraOffset.x = game.scale.width/2 - text.width/2;
+    text.cameraOffset.y = game.scale.height/2 - text.height/2;
+
+    game.time.events.add(duration, () => {
+        text.destroy();
+        gfx.destroy();
+        location.reload();
+    }, this);
+}
+
+
+function create() {
     game.stage.backgroundColor = '#9ce5fb';
 
     deliver_sound = game.add.audio('Deliver');
@@ -108,24 +127,10 @@ function create() {
     objectives.populate(result);
 
     hud = new Hud(game);
-    hud.registerTimeUpCallback(() => {
-        const gfx = game.add.graphics(0, 0);
-        gfx.fixedToCamera = true;
-        gfx.beginFill(0xFF0000, 0.5);
-        gfx.drawRect(0, 0, game.scale.width, game.scale.height);
 
-        const text = game.add.text(0, 0, 'GAME OVER', {'fill': '#220000'});
-        text.fixedToCamera = true;
-        text.fontSize = 100;
-        text.cameraOffset.x = game.scale.width/2 - text.width/2;
-        text.cameraOffset.y = game.scale.height/2 - text.height/2;
-
-        game.time.events.add(5000, () => {
-            text.destroy();
-            gfx.destroy();
-            location.reload();
-        }, this);
-    });
+    hud.registerTimeUpCallback(() =>
+        showEndGameOverlay('GAME OVER', 5000, 0xFF0000, 0.5, '#220000')
+    );
 
     missiongiver.registerMissionCallback(() => {
         objectives.beginRoute(player.position, [0]);
@@ -136,6 +141,9 @@ function create() {
         const secondsPerPixel = 0.008;
         hud.addTime(dist * secondsPerPixel);
     });
+    objectives.registerDoneCallback(() =>
+        showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
+    );
 }
 
 function update() {
