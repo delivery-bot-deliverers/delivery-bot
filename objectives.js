@@ -151,13 +151,73 @@ class MissionGiver {
     }
 }
 
+class Hud {
+    constructor(game) {
+        this._group = game.add.group();
+        this._group.fixedToCamera = true;
+
+        this._group.cameraOffset = new Phaser.Point(game.scale.width - 200.0, 20.0);
+
+        const textstyle = {};
+
+        this._mode = 'dormant';
+        this._timeLeftText = game.add.text(0, 0, '', textstyle, this._group),
+        this._secondsLeft = 0.0;
+        this._warningSeconds = 0.0;
+    }
+
+    update(game) {
+        if (this._mode === 'mission' && this._secondsLeft === 0) {
+            this._mode = 'warning';
+            this._warningSeconds = 2.0;
+        }
+        if (this._mode === 'warning' && this._warningSeconds === 0) {
+            this._mode = 'dormant';
+        }
+
+        if (this._mode === 'dormant') {
+            this._timeLeftText.visible = false;
+        } else if (this._mode === 'mission') {
+            this._timeLeftText.visible = true;
+            this._secondsLeft = Math.max(
+                0.0,
+                this._secondsLeft - game.time.physicsElapsed
+            );
+            const _jiffies = Math.floor((this._secondsLeft % 1) * 60.0);
+            const _wholeSecs = Math.floor(this._secondsLeft);
+            this._timeLeftText.text = ('Time: '
+                                       + _wholeSecs.toString().padStart(2, '0')
+                                       + ':' + _jiffies.toString().padStart(2, '0'));
+        } else if (this._mode === 'warning') {
+            this._warningSeconds = Math.max(
+                0.0,
+                this._warningSeconds - game.time.physicsElapsed
+            );
+            this._timeLeftText.visible = (this._warningSeconds % 0.5) < 0.25;
+        }
+    }
+
+    startTimer(seconds) {
+        this._mode = 'mission';
+        this._secondsLeft = seconds;
+    }
+
+    addTime(seconds) {
+        if (this._mode === 'mission') {
+            this._secondsLeft += seconds;
+        }
+    }
+}
+
 class Objectives {
     constructor(game) {
         this.group = game.add.group();
         this.group.enableBody = true;
         this.indicator = new Indicator(game);
         this.route = [];
+        this.routedists = [];
         this.route_cursor = null;
+        this._collectCallback = () => {};
     }
 
     update(game) {
@@ -193,6 +253,7 @@ class Objectives {
         );
 
         const route = [];
+        const routedists = [];
         let from = startpoint;
         while (available.length > 0) {
             let bestdist = Infinity;
@@ -208,11 +269,13 @@ class Objectives {
             });
 
             route.push(available[bestindex]);
+            routedists.push(bestdist);
             from = available[bestindex].position;
             available.splice(bestindex, 1);
         }
 
         this.route = route;
+        this.routedists = routedists;
         this.route_cursor = 0;
     }
 
@@ -220,9 +283,16 @@ class Objectives {
         if (this.route_cursor !== null && objective === this.route[this.route_cursor]) {
             if (this.route_cursor + 1 < this.route.length) {
                 this.route_cursor += 1;
+                this._collectCallback(this.routedists[this.route_cursor]);
             } else {
                 this.route_cursor = null;
             }
         }
+    }
+
+    // Trigger a callback when an objective is reached, with one argument that is
+    // the euclidean distance to the next goal.
+    registerCollectCallback(callback) {
+        this._collectCallback = callback;
     }
 }

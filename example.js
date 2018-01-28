@@ -19,6 +19,7 @@ var explosion_sound;
 var get_job_sound;
 var jump_sound;
 var land_sound;
+var hud;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -106,9 +107,17 @@ function create() {
     objectives = new Objectives(game);
     objectives.populate(result);
 
+    hud = new Hud(game);
+
     missiongiver.registerMissionCallback(() => {
         objectives.beginRoute(player.position, [0]);
+        hud.startTimer(10.0);
     }, missiongiver);
+
+    objectives.registerCollectCallback((dist) => {
+        const secondsPerPixel = 0.008;
+        hud.addTime(dist * secondsPerPixel);
+    });
 }
 
 function update() {
@@ -124,6 +133,7 @@ function update() {
 
     objectives.update(game);
     missiongiver.update(game);
+    hud.update(game);
 
     for(var i = 0; i < Upgrades.length; i++)  {
 	    Upgrades[i].update(press_Z,cursors,press_Space);
