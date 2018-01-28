@@ -9,38 +9,47 @@ class Upgrade_Booster{
 
 		this.CanBoost = true; 
 
+		this.ang  = 0; 
+		this.offang = 0;
+
 		this.emitter = game.add.emitter(game.world.centerX, game.world.centerY, 900);
 		this.emitter.makeParticles(particles);
 		this.emitter.setAlpha(0.5, 1, 3000);
 		this.emitter.setScale(.8, 2, .8, 2, 1000);
 
 	}
- 
+
+	setAng(){
+		if(this.player.facing == "Right"){
+			this.sprite.angle =  this.offang; 
+		}else if(this.player.facing == "Left"){
+			this.sprite.angle  = 360 - this.offang;  
+		}
+	} 
+
 	startBooster()
 	{
 		if(!this.CanBoost) return; 
 		this.CanBoost = false;
 		this.TimerCounter = 10;
-		this.sprite.angle = 0; 
+		this.offang = 0; 
 
 		this.Timer = this.game.time.create(false);  
 		this.Adding = true;
 
-		this.Timer.loop(10, this.rotate, this);
+		this.Timer.loop(10, () =>{
+				if(this.Adding){
+				this.offang += 2; 
+				if(this.offang> 90){this.Adding = false;}
+				}
+				else {
+				this.offang -= 2; 
+				if(this.offang < 0){this.Adding = true;}
+				}
+		}, this);
 
  		this.Timer.start();
 	}
-	rotate()
-	{
-		if(this.Adding){
-			this.sprite.angle += 2; 
-			if(this.sprite.angle > 90){this.Adding = false;}
-		}
-		else {
-			this.sprite.angle -= 2; 
-			if(this.sprite.angle < 0){this.Adding = true;}
-		}
-	}	
 
 	update(Key, cursors, press_Space){
 		if (Key.isDown && this.CanBoost){ 
@@ -58,11 +67,13 @@ class Upgrade_Booster{
 			this.emitter.start(false, 3000, 20, 50);
 		}
 
+		if(this.player.facing == "Right"){}
 
 		this.sprite.x = player.body.x + this.offX;
 		this.sprite.y = player.body.y + this.offY;
 
 		this.emitter.x = player.body.x + this.offX;
 		this.emitter.y = player.body.y + this.offY;
+		this.setAng();
 	}
 }
