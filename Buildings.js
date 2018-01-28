@@ -1,3 +1,4 @@
+		p.inputEnabled = false2
 
 
 function MakeBlock(sprites, parentGroup, X, Y, pos)
@@ -103,8 +104,7 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 		if(mePos <0){
 			mePos = 0;
 		}
-		var p =	game.add.sprite(X, Y, bgSprites[mePos]);	
-		p.inputEnabled = false;
+		game.add.image(X, Y, bgSprites[mePos]);	
 	}
 
 	var retlist = [[],[],[],[],[],[]];         
