@@ -37,7 +37,7 @@ function preload() {
     game.load.image('wallB2', 'assets/Wall1_Background1.png');
 
     game.load.image('exclamation', 'assets/exclamation.png');
-    game.load.image('missiongiver', 'assets/missiongiver.png');
+    game.load.spritesheet('missiongiver', 'assets/missiongiver.png', 32, 64);
 
     game.load.audio('Deliver', 'assets/Deliver.wav');
     game.load.audio('DropBomb', 'assets/DropBomb.wav');
