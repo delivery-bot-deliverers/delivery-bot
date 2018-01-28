@@ -12,6 +12,9 @@ var player;
 var cursors;
 var score = 0;
 var objectives;
+var Upgrades;
+var press_Z;
+var press_Space; 
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -57,13 +60,19 @@ function create() {
     
     player.animations.add('left', [0, 1, 2, 3], 10, true);
     player.animations.add('right', [5, 6, 7, 8,], 10, true);
-    
-    var booster = new Upgrade_Booster(game, player,'Rocket');  
-    player.upgrades = [booster];
-	
-    cursors = game.input.keyboard.createCursorKeys();
 
+    var booster = new Upgrade_Booster(game, player,'Rocket',7,10 );  
+    Upgrades = [booster];
+	
+    game.world.bringToTop(player); 
+
+    cursors = game.input.keyboard.createCursorKeys();
+	
     game.camera.follow(player); 	
+
+    press_Z =  game.input.keyboard.addKey(Phaser.Keyboard.Space); 
+    press_Space = game.input.keyboard.addKey(Phaser.Keyboard.Z);
+
     objectives = new Objectives(game);
     objectives.populate(result);
 }
@@ -73,8 +82,9 @@ function update() {
     game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
 
     objectives.update(game);
-    for(var i = 0; i < player.upgrades.length; i++)  {
-	    player.upgrades[i].update();
+
+    for(var i = 0; i < Upgrades.length; i++)  {
+	    Upgrades[i].update(press_Z,cursors,press_Space);
     } 
 
     if (cursors.left.isDown) {

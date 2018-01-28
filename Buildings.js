@@ -1,5 +1,3 @@
-
-
 function MakeBlock(sprites, parentGroup, X, Y, pos)
 {
 }
