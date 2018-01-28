@@ -70,7 +70,7 @@ function showEndGameOverlay(thestring, duration, bgColorNum, bgColorAlpha, textC
     gfx.beginFill(bgColorNum, bgColorAlpha);
     gfx.drawRect(0, 0, game.scale.width, game.scale.height);
 
-    const text = game.add.text(0, 0, thestring, {'fill': '#220000'});
+    const text = game.add.text(0, 0, thestring, {'fill': textColorStr});
     text.fixedToCamera = true;
     text.fontSize = 100;
     text.cameraOffset.x = game.scale.width/2 - text.width/2;
@@ -80,6 +80,18 @@ function showEndGameOverlay(thestring, duration, bgColorNum, bgColorAlpha, textC
         text.destroy();
         gfx.destroy();
         location.reload();
+    }, this);
+}
+
+function spawnFloatUpText(x, y, thestring, color) {
+    const durationMs = 1500;
+    const pixelsPerSecond = 30;
+    const text = game.add.text(x, y, thestring, {'fill': color});
+    text.update = () => {
+        text.y -= pixelsPerSecond * game.time.physicsElapsed;
+    };
+    game.time.events.add(durationMs, () => {
+        text.destroy();
     }, this);
 }
 
@@ -156,7 +168,12 @@ function create() {
 
     objectives.registerCollectCallback((dist) => {
         const secondsPerPixel = 0.008;
-        hud.addTime(dist * secondsPerPixel);
+        const dollarsPerPixel = 0.01;
+        const deltaTime = dist * secondsPerPixel;
+        const deltaDollars = Math.round(dist * dollarsPerPixel);
+        hud.addTime(deltaTime);
+        hud.addDollars(deltaDollars);
+        spawnFloatUpText(player.x, player.y - 30, '$'+deltaDollars.toString(), '#00AA00');
     });
     objectives.registerDoneCallback(() =>
         showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
@@ -184,18 +201,20 @@ function update() {
 	    Upgrades[i].update(press_Z,cursors,press_Space);
     } 
 
+    const xspeed = 200;
+    const xaccel = xspeed * 2.69;
     if (cursors.left.isDown) {
         if(player.body.acceleration.x > 0) 
-        	player.body.velocity.x = -130; 
+            player.body.velocity.x = -xspeed;
 
-        player.body.acceleration.x = -350;
+        player.body.acceleration.x = -xaccel;
         player.animations.play('left');
 	player.facing = "Left";
     } else if (cursors.right.isDown) {
         if(player.body.acceleration.x < 0) 
-        	player.body.velocity.x = 130; 
+            player.body.velocity.x = xspeed;
 
-        player.body.acceleration.x = 350;
+        player.body.acceleration.x = xaccel;
 	player.animations.play('right');
 	player.facing = "Right";
     }else if(hitPlatform && player.body.velocity.x != 0) {
