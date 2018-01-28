@@ -54,20 +54,23 @@ function placePlatformTiles(Platforms,X,Y,BlockSize,Tile,TileBG)
 	{
 		var pts = PlatformParser(Platforms[i],X,Y,25,Tile,TileBG );
 		Y = Y - (Platforms[i].length * BlockSize); 
+		console.log("PLat size "+Platforms[i].length);
 		MergeArrays(retlist, pts);
 	}
 	return retlist;
 }
 
-function MakePlatform(sprites, bgSprites, game, platforms ) 
+
+function GenSmallBuild(X, game, bgSprites, MakeSprites, MakeBG) 
 {
+	var retlist = [[],[],[],[],[],[]];         
 	var plat = 
 		[
-		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[0,0,0,0,0,1,2,2,2,2,3,0,0,4],
-		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[0,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,1,2,2,2,2,3,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		];
@@ -85,24 +88,99 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 
 	var plat3 = 
 		[
+		[5,2,2,2,0,0,0,0,0,2,2,2,2,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[5,2,2,3,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[5,0,0,0,0,0,0,0,0,0,1,2,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		]; 
 
+		var building = [plat]; 
+		var buildingHeight = (plat.length * 25);
+
+		var randy2 = Math.random() * 1;
+		for(var ii = 0; ii< randy2; ii++) 
+		{
+			building.push(plat2);  
+			buildingHeight += (plat2.length * 25);
+		} 
+		building.push(plat3);  
+		buildingHeight += (plat3.length * 25);
+
+		game.add.tileSprite(X, 2900 - buildingHeight , 350, buildingHeight,bgSprites[0]);	
+
+		var pts = placePlatformTiles(building,X,2760,25, MakeSprites,MakeBG);
+		MergeArrays(retlist, pts);
+ 		return retlist;
+}
+
+function MakePlatform(sprites, bgSprites, game, platforms, walls, BreakWalls) 
+{
+	var plat = 
+		[
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,1,2,2,2,2,3,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+		];
+
+	var plat2 = 
+		[
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,2,2,2,2,3,0,0,0,0,0,0,0,4],
+		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,10,0,0,0,0,9],
+		[6,0,0,0,0,0,0,1,2,2,2,2,2,7],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
+	var plat3 = 
+		[
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,2,2,3,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,0,0,1,2,2,7],
+		[6,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
+	var plat4 = 
+		[
+		[6,2,2,2,0,0,0,0,0,2,2,2,2,7],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
 	var MakeSprites = function(X,Y,Pos)
 	{
-		var p =	platforms.create(X, Y, sprites[Pos]);	
-		p.body.immovable = true;
+		if(Pos == 3 || Pos == 4 ) {
+			var p =	walls.create(X, Y, sprites[Pos]);	
+			p.body.immovable = true;
+		}else if(Pos == 7 || Pos == 8 ) {
+			var p =	BreakWalls.create(X, Y, sprites[Pos]);	
+			p.body.immovable = true;
+		}	
+		else {
+			var p =	platforms.create(X, Y, sprites[Pos]);	
+			p.body.immovable = true;
+		}
 	}
 
 	var MakeBG = function(X,Y,Pos)
 	{
-return; 
+		return; 
 		var mePos = Pos;
 		if(mePos >0){
 			mePos = 1;
@@ -121,6 +199,7 @@ return;
 	var randy1 = 5;
 	var loc = 300;  
 	var buildingHeight = 0; 
+
 	for(var i = 0 ; i < randy1; i++) 
 	{ 	
 		var building = [plat]; 
@@ -140,6 +219,8 @@ return;
 				buildingHeight += (plat3.length * 25);
 			} 
 		}
+		building.push(plat4);  
+		buildingHeight += (plat4.length * 25);
 
 		game.add.tileSprite(loc, 2950 - buildingHeight ,350, buildingHeight,bgSprites[0] );	
 
@@ -147,8 +228,14 @@ return;
 		MergeArrays(retlist, pts);
 		loc += (400 + (Math.random() * 200)); 
 	}
-
 	MergeArrays(retlist, pts);
+/*
+	for( var i = 1; i < 10; i++ ){
+
+		var pts = GenSmallBuild((i * 10000), game, bgSprites, MakeSprites, MakeBG); 
+		MergeArrays(retlist, pts);
+	}
+*/
 
 	return retlist;
 }

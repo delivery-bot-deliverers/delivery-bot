@@ -5,6 +5,9 @@ const game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {
 });
 
 var platforms;
+var Walls;
+var BreakWalls;
+
 var player;
 var cursors;
 var score = 0;
@@ -37,6 +40,12 @@ function preload() {
     game.load.image('wallB', 'assets/Wall1_Background.png');
     game.load.image('wallB2', 'assets/Wall1_Background1.png');
 
+    game.load.image('WallFloorL', 'assets/WallFloor1_LeftSide.png');
+    game.load.image('WallFloorR', 'assets/WallFloor1_RightSide.png');
+
+    game.load.image('WallLBrk', 'assets/Wall1_LeftSideBrk.png');
+    game.load.image('WallRBrk', 'assets/Wall1_RightSideBrk.png');
+
     game.load.image('Rocket', 'assets/Rocket.png');
     game.load.image('exclamation', 'assets/exclamation.png');
     game.load.spritesheet('missiongiver', 'assets/missiongiver.png', 32, 64);
@@ -51,6 +60,8 @@ function preload() {
     game.load.image('Smoke1', 'assets/Smoke1.png');
     game.load.image('Smoke2', 'assets/Smoke2.png');
     game.load.image('Smoke3', 'assets/Smoke3.png');
+
+
 }
 
 function create() {
@@ -65,20 +76,26 @@ function create() {
     jump_sound = game.add.audio('Jump');
     land_sound = game.add.audio('Land');
 
-    game.add.sprite(0, 0, 'star');
     game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.add.sprite(0, 0, 'sky');
-    game.world.setBounds(0,0,3000,3000); 
+    game.world.setBounds(0,0,300000,3000); 
 
     platforms = game.add.group();
     platforms.enableBody = true;
 
+    Walls = game.add.group(); 
+    Walls.enableBody = true;
+
+    BreakWalls = game.add.group();
+    BreakWalls.enableBody = true;
+
     var ground = platforms.create(0, game.world.height - 64, "ground");
-    ground.scale.setTo(10, 2);
+    ground.scale.setTo(1000, 2);
     ground.body.immovable = true;
 
-    var result = MakePlatform(['platL','platM','platR','wallR','wallL'],['wallB','wallB2'],  game, platforms);
+    var result = MakePlatform(['platL','platM','platR','wallR','wallL','WallFloorL','WallFloorR','WallLBrk','WallRBrk'],['wallB','wallB2'],  game, platforms, Walls,BreakWalls);
     game.world.bringToTop(platforms); 
+    game.world.bringToTop(Walls); 
+    game.world.bringToTop(BreakWalls); 
 	
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
@@ -121,7 +138,9 @@ function create() {
 }
 
 function update() {
+	var curVx =player.body.velocity.x;  
     const hitPlatform = game.physics.arcade.collide(player, platforms);
+    const hitWall = game.physics.arcade.collide(player, Walls);
 
     if (hitPlatform && player.falling) {
         player.falling = false;
@@ -141,14 +160,14 @@ function update() {
 
     if (cursors.left.isDown) {
         if(player.body.acceleration.x > 0) 
-        	player.body.velocity.x = -100; 
+        	player.body.velocity.x = -130; 
 
         player.body.acceleration.x = -350;
         player.animations.play('left');
 	player.facing = "Left";
     } else if (cursors.right.isDown) {
         if(player.body.acceleration.x < 0) 
-        	player.body.velocity.x = 100; 
+        	player.body.velocity.x = 130; 
 
         player.body.acceleration.x = 350;
 	player.animations.play('right');
@@ -177,6 +196,17 @@ function update() {
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -600;
         jump_sound.play();
+    }
+
+    if (hitWall) {
+	    if(player.body.velocity.x < 0) {
+		    player.X += 50; 
+	    }else {
+		    player.X -= 50;  
+	    }
+
+	player.body.velocity.x = -(curVx * .4);
+	console.log(player.body.velocity.x); 
     }
 
     if (player.body.velocity.y > 0) {
