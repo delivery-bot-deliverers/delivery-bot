@@ -226,7 +226,7 @@ function MakePlatform(sprites, bgSprites, game, platforms, walls, BreakWalls)
 
 		var pts = placePlatformTiles(building,loc,2760,25, MakeSprites,MakeBG);
 		MergeArrays(retlist, pts);
-		loc += (400 + (Math.random() * 200)); 
+		loc += (400 + (Math.random() * 2000));
 	}
 	MergeArrays(retlist, pts);
 /*

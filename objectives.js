@@ -161,13 +161,29 @@ class Hud {
         this._group = game.add.group();
         this._group.fixedToCamera = true;
 
-        this._group.cameraOffset = new Phaser.Point(game.scale.width - 200.0, 20.0);
+        const xmargin = 30;
+        const ymargin = 15;
+        const yspacing = 10;
+        const width = 230;
+        const height = 150;
+        const textstyle = {'fill': '#EEEEEE'};
+
+        this._group.cameraOffset = new Phaser.Point(game.scale.width - width, 0.0);
+
+
+        this._gfx = game.make.graphics(0, 0);
+        this._gfx.beginFill(0x000000, 0.3);
+        this._gfx.drawRoundedRect(0, 0, width, height);
+        this._group.add(this._gfx);
 
         this._mode = 'dormant';
-        this._timeLeftText = game.add.text(0, 0, '', {'fill': '#000000'}, this._group);
+        this._timeLeftText = game.add.text(xmargin, ymargin, '', textstyle, this._group);
         this._secondsLeft = 0.0;
         this._warningSeconds = 0.0;
         this._timeUpCallback = () => {};
+
+        this._dollarsText = game.add.text(xmargin, yspacing + this._timeLeftText.height, 'Cash: $0', textstyle, this._group);
+        this._dollars = 0;
     }
 
     update(game) {
@@ -181,7 +197,8 @@ class Hud {
         }
 
         if (this._mode === 'dormant') {
-            this._timeLeftText.visible = false;
+            this._timeLeftText.visible = true;
+            this._timeLeftText.text = 'Time: -';
         } else if (this._mode === 'mission') {
             this._timeLeftText.visible = true;
             this._secondsLeft = Math.max(
@@ -211,6 +228,11 @@ class Hud {
         if (this._mode === 'mission') {
             this._secondsLeft += seconds;
         }
+    }
+
+    addDollars(dollars) {
+        this._dollars += dollars;
+        this._dollarsText.text = 'Cash: $' + Math.round(this._dollars);
     }
 
     registerTimeUpCallback(callback) {
@@ -263,7 +285,8 @@ class Objectives {
     // enabled_difficulties: Array[int]: the difficulty levels to include
     beginRoute(startpoint, enabled_difficulties) {
         const available = this.group.children.filter(child =>
-            enabled_difficulties.includes(child.difficulty)
+            //enabled_difficulties.includes(child.difficulty)
+            Math.random() > 0.5
         );
 
         const route = [];
@@ -297,7 +320,7 @@ class Objectives {
         if (this.route_cursor !== null && objective === this.route[this.route_cursor]) {
             if (this.route_cursor + 1 < this.route.length) {
                 this.route_cursor += 1;
-                this._collectCallback(this.routedists[this.route_cursor]);
+                this._collectCallback(objective, this.routedists[this.route_cursor]);
             } else {
                 this._doneCallback();
                 this.route_cursor = null;
@@ -305,8 +328,8 @@ class Objectives {
         }
     }
 
-    // Trigger a callback when an objective is reached, with one argument that is
-    // the euclidean distance to the next goal.
+    // Trigger a callback when an objective is reached, with the sprite that was reached,
+    // and the euclidean distance to the next goal.
     registerCollectCallback(callback) {
         this._collectCallback = callback;
     }
