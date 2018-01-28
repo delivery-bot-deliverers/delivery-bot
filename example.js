@@ -157,10 +157,8 @@ function create() {
     player.boosting = false;
 
     var booster = new Upgrade_Booster(game, player,'Rocket',20,20,['Smoke1','Smoke2','Smoke3'] );  
-    Upgrades = [booster];
-
     var regan = new Upgrade_Regan(game, player,20,20);  
-    upgrades_regan = [regan];
+    Upgrades = [booster, regan];
 
     game.world.bringToTop(player); 
     game.camera.follow(player); 	
@@ -195,7 +193,7 @@ function create() {
 
 	var sadloc = Math.round(sadText.length * Math.random()); 
 	if(sadloc >= sadText.length) sadloc = sadText.length -1;  
-        spawnFloatUpText(player.x + 30 , player.y - 30, sadText[sadloc], '#555555');
+        spawnFloatUpText(player.x + 50 , player.y - 30, sadText[sadloc], '#555555');
     });
     objectives.registerDoneCallback(() =>
         showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
@@ -226,10 +224,6 @@ function update() {
 
     for(var i = 0; i < Upgrades.length; i++)  {
 	    Upgrades[i].update(press_Z,cursors,press_Space);
-    } 
-
-    for(var i = 0; i < upgrades_regan.length; i++)  {
-	    upgrades_regan[i].update(press_Z,cursors,press_Space);
     } 
 
     const xspeed = 200;
@@ -290,3 +284,5 @@ function update() {
         player.falling = true;
     }
 }
+
+

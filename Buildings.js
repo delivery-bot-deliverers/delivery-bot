@@ -86,6 +86,28 @@ function GenSmallBuild(X, game, bgSprites, MakeSprites, MakeBG)
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		]; 
 
+	var plat2_1 = 
+		[
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,2,3,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,10,4],
+		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
+	var plat2_2 = 
+		[
+		[5,0,0,0,10,0,0,0,0,0,0,0,0,4],
+		[5,2,2,2,2,3,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,1,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
 	var plat3 = 
 		[
 		[5,2,2,2,0,0,0,0,0,2,2,2,2,4],
@@ -104,8 +126,9 @@ function GenSmallBuild(X, game, bgSprites, MakeSprites, MakeBG)
 		var randy2 = Math.random() * 1;
 		for(var ii = 0; ii< randy2; ii++) 
 		{
-			building.push(plat2);  
-			buildingHeight += (plat2.length * 25);
+
+			building.push(added);  
+			buildingHeight += (added.length * 25);
 		} 
 		building.push(plat3);  
 		buildingHeight += (plat3.length * 25);
@@ -141,10 +164,31 @@ function MakePlatform(sprites, bgSprites, game, platforms, walls, BreakWalls)
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		]; 
 
-	var plat3 = 
+	var plat2_1 = 
 		[
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[5,2,2,3,0,0,0,0,0,0,0,0,0,4],
+		[5,2,3,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[8,0,0,0,0,0,0,0,0,0,0,0,10,9],
+		[8,0,0,0,0,0,0,1,2,2,2,2,2,7],
+		[6,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
+	var plat2_2 = 
+		[
+		[8,0,0,0,10,0,0,0,0,0,0,0,0,4],
+		[7,2,2,2,2,3,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,9],
+		[5,0,0,0,0,0,0,0,0,0,0,1,2,7],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+	var plat3 = 
+		[
+		[5,0,0,0,10,0,0,0,0,0,0,0,0,4],
+		[5,2,2,2,2,3,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,9],
 		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
 		[8,0,0,0,0,0,0,0,0,0,0,0,0,9],
@@ -208,8 +252,14 @@ function MakePlatform(sprites, bgSprites, game, platforms, walls, BreakWalls)
 		var randy2 = Math.random() * 10;
 		for(var ii = 0; ii< randy2; ii++) 
 		{
-			building.push(plat2);  
-			buildingHeight += (plat2.length * 25);
+			var sadloc = Math.round(30 * Math.random()); 
+			var added; 
+			if(sadloc <= 10)added = plat2;
+			else if(sadloc <= 20)added = plat2_1;
+			else if(sadloc <= 30)added = plat2_2;
+
+			building.push(added);  
+			buildingHeight += (added.length * 25);
 		} 
 		if(randy2 > 7 ) {
 			var randy3 = Math.random() * 6;
