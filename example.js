@@ -14,7 +14,10 @@ var player;
 var cursors;
 var score = 0;
 var objectives;
+
 var Upgrades;
+var upgrades_regan;
+
 var press_Z;
 var press_Space; 
 var missiongiver;
@@ -33,6 +36,8 @@ function preload() {
     game.load.spritesheet('dude', 'assets/dude.png', 32, 48);
 
     game.load.spritesheet('objectiveDude1', 'assets/Person_Objective1.png', 32, 64);
+
+    game.load.spritesheet('TheRegan', 'assets/TheRegan.png', 76, 88);
 
     game.load.image('platL', 'assets/Plat1_LeftSide.png');
     game.load.image('platM', 'assets/Plat1_Mid.png');
@@ -165,7 +170,10 @@ function create() {
 
     var booster = new Upgrade_Booster(game, player,'Rocket',20,20,['Smoke1','Smoke2','Smoke3'] );  
     Upgrades = [booster];
-	
+
+    var regan = new Upgrade_Regan(game, player,20,20);  
+    upgrades_regan = [regan];
+
     game.world.bringToTop(player); 
     game.camera.follow(player); 	
 
@@ -227,6 +235,10 @@ function update() {
 
     for(var i = 0; i < Upgrades.length; i++)  {
 	    Upgrades[i].update(press_Z,cursors,press_Space);
+    } 
+
+    for(var i = 0; i < upgrades_regan.length; i++)  {
+	    upgrades_regan[i].update(press_Z,cursors,press_Space);
     } 
 
     const xspeed = 200;
