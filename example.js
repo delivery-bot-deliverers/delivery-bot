@@ -15,6 +15,13 @@ var objectives;
 var Upgrades;
 var press_Z;
 var press_Space; 
+var missiongiver;
+var deliver_sound;
+var drop_bomb_sound;
+var explosion_sound;
+var get_job_sound;
+var jump_sound;
+var land_sound;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -33,10 +40,27 @@ function preload() {
     game.load.image('wallB2', 'assets/Wall1_Background1.png');
 
     game.load.image('Rocket', 'assets/Rocket.png');
+    game.load.image('exclamation', 'assets/exclamation.png');
+    game.load.image('missiongiver', 'assets/missiongiver.png');
+
+    game.load.audio('Deliver', 'assets/Deliver.wav');
+    game.load.audio('DropBomb', 'assets/DropBomb.wav');
+    game.load.audio('Explosion', 'assets/Explosion.wav');
+    game.load.audio('GetJob', 'assets/GetJob.wav');
+    game.load.audio('Jump', 'assets/Jump.wav');
+    game.load.audio('Land', 'assets/Land.wav');
 }
 
 
 function create() {
+
+    deliver_sound = game.add.audio('Deliver');
+    drop_bomb_sound = game.add.audio('DropBomb');
+    explosion_sound = game.add.audio('Explosion');
+    get_job_sound = game.add.audio('GetJob');
+    jump_sound = game.add.audio('Jump');
+    land_sound = game.add.audio('Land');
+
     game.add.sprite(0, 0, 'star');
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
@@ -54,7 +78,6 @@ function create() {
 	
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
-    player.body.bounce.y = 0.5;
     player.body.gravity.y = 1500;
     player.body.collideWorldBounds = true;
     
@@ -73,15 +96,23 @@ function create() {
     press_Z =  game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); 
     press_Space = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
+    missiongiver = new MissionGiver(game, 200, 2872);
+
     objectives = new Objectives(game);
     objectives.populate(result);
 }
 
 function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
+    if (hitPlatform && player.falling) {
+        player.falling = false;
+        land_sound.play();
+    }
+
     game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
 
     objectives.update(game);
+    missiongiver.update(game);
 
     for(var i = 0; i < Upgrades.length; i++)  {
 	    Upgrades[i].update(press_Z,cursors,press_Space);
@@ -108,5 +139,11 @@ function update() {
 
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -600;
+        jump_sound.play();
     }
+
+    if (player.body.velocity.y > 0) {
+        player.falling = true;
+    }
+
 }
