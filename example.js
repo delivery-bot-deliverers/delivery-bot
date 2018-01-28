@@ -100,6 +100,25 @@ function spawnFloatUpText(x, y, thestring, color) {
 }
 
 
+var sadText = ["Well that took forever",
+    	       "eh.. thanks I guess",
+               "Ugh I guess you can have a tip",
+               "Why do you need money",
+               "awww it is cold",
+               "I don't remmeber what I ordered",
+               "I dont like tipping bots",
+               "booo",
+               "jump better please",
+               "If I was a roobit I wuld have done better",
+               "not impressed",
+               "5 out of 7",
+               "My toaster is faster",
+               "I have been waiting forever",
+               "Why would you make me wait so long",
+               "NOOO, i needed this like 10 seconds ago",
+               "Please try and do better",
+               "I am not mad.. just sad"];
+
 function create() {
     game.stage.backgroundColor = '#9ce5fb';
 
@@ -177,6 +196,10 @@ function create() {
         hud.addTime(deltaTime);
         hud.addDollars(deltaDollars);
         spawnFloatUpText(player.x, player.y - 30, '$'+deltaDollars.toString(), '#00AA00');
+
+	var sadloc = Math.round(sadText.length * Math.random()); 
+	if(sadloc >= sadText.length) sadloc = sadText.length -1;  
+        spawnFloatUpText(player.x + 30 , player.y - 30, sadText[sadloc], '#555555');
     });
     objectives.registerDoneCallback(() =>
         showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
@@ -256,6 +279,7 @@ function update() {
 	    }
 
 	player.body.velocity.x = -(curVx * .4);
+
 	console.log(player.body.velocity.x); 
     }
 
