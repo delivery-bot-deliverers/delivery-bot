@@ -1,4 +1,4 @@
-		p.inputEnabled = false2
+//		p.inputEnabled = false2
 
 
 function MakeBlock(sprites, parentGroup, X, Y, pos)
