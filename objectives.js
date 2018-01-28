@@ -309,7 +309,7 @@ class Objectives {
         if (this.route_cursor !== null && objective === this.route[this.route_cursor]) {
             if (this.route_cursor + 1 < this.route.length) {
                 this.route_cursor += 1;
-                this._collectCallback(this.routedists[this.route_cursor]);
+                this._collectCallback(objective, this.routedists[this.route_cursor]);
             } else {
                 this._doneCallback();
                 this.route_cursor = null;
@@ -317,8 +317,8 @@ class Objectives {
         }
     }
 
-    // Trigger a callback when an objective is reached, with one argument that is
-    // the euclidean distance to the next goal.
+    // Trigger a callback when an objective is reached, with the sprite that was reached,
+    // and the euclidean distance to the next goal.
     registerCollectCallback(callback) {
         this._collectCallback = callback;
     }

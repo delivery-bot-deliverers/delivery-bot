@@ -166,7 +166,7 @@ function create() {
         hud.startTimer(8.0);
     });
 
-    objectives.registerCollectCallback((dist) => {
+    objectives.registerCollectCallback((objective, dist) => {
         const secondsPerPixel = 0.008;
         const dollarsPerPixel = 0.01;
         const deltaTime = dist * secondsPerPixel;
