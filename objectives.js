@@ -138,6 +138,13 @@ class MissionGiver {
         }
     }
 
+    destroy() {
+        this.sprite.destroy();
+        this._exc.destroy();
+        this._countdown_text.destroy();
+        this._countdown_timer.destroy();
+    }
+
     collidePlayer() {
         if (this._countdown !== 0 &&
                 this.game.input.keyboard.isDown(Phaser.KeyCode.SPACEBAR)) {
@@ -155,6 +162,8 @@ class MissionGiver {
 
 class Store {
     constructor(game, hud) {
+        this._doneCallback = () => {};
+
         this._group = game.add.group();
         this._group.fixedToCamera = true;
 
@@ -170,7 +179,7 @@ class Store {
         this._title = game.add.text(
             margin + 30,
             margin + 30,
-            'Store',
+            'Great job! Spend wisely',
             {'fill': '#FFFFFF'},
             this._group
         );
@@ -209,11 +218,12 @@ class Store {
         });
 
         const done = game.add.text(
-            margin + 350, 390, 'Done', {'fill': '#FFFFFF'}, this._group
+            margin + 290, 390, 'Next round', {'fill': '#FFFFFF'}, this._group
         );
         done.inputEnabled = true;
         done.events.onInputDown.add(() => {
-            this.setVisible(false);
+            this._group.visible = false;
+            this._doneCallback();
         });
         buttons.push(done);
 
@@ -227,8 +237,9 @@ class Store {
         });
     }
 
-    setVisible(bool) {
-        this._group.visible = bool;
+    show(doneCallback) {
+        this._group.visible = true;
+        this._doneCallback = doneCallback;
     }
 }
 
@@ -311,6 +322,10 @@ class Hud {
         this._dollarsText.text = 'Cash: $' + Math.round(this._dollars);
     }
 
+    makeDormant() {
+        this._mode = 'dormant';
+    }
+
     getDollars() {
         return this._dollars;
     }
@@ -367,7 +382,7 @@ class Objectives {
     beginRoute(startpoint, enabled_difficulties) {
         const available = this.group.children.filter(child =>
             //enabled_difficulties.includes(child.difficulty)
-            Math.random() > 0.5
+            Math.random() > 0.6
         );
 
         const route = [];

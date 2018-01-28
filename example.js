@@ -29,6 +29,7 @@ var jump_sound;
 var land_sound;
 var hud;
 var store;
+var playerSpawn;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -74,7 +75,7 @@ function preload() {
 
 }
 
-function showEndGameOverlay(thestring, duration, bgColorNum, bgColorAlpha, textColorStr) {
+function showEndRouteOverlay(thestring, duration, bgColorNum, bgColorAlpha, textColorStr, callback) {
     const gfx = game.add.graphics(0, 0);
     gfx.fixedToCamera = true;
     gfx.beginFill(bgColorNum, bgColorAlpha);
@@ -89,7 +90,7 @@ function showEndGameOverlay(thestring, duration, bgColorNum, bgColorAlpha, textC
     game.time.events.add(duration, () => {
         text.destroy();
         gfx.destroy();
-        location.reload();
+        callback();
     }, this);
 }
 
@@ -125,7 +126,7 @@ function create() {
 
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.world.setBounds(0,0,300000,3000); 
-
+    
     platforms = game.add.group();
     platforms.enableBody = true;
 
@@ -146,7 +147,8 @@ function create() {
     game.world.bringToTop(Walls); 
     game.world.bringToTop(BreakWalls); 
 	
-    player = game.add.sprite(32, game.world.height - 150, 'dude');
+    playerSpawn = new Phaser.Point(32, game.world.height - 150);
+    player = game.add.sprite(playerSpawn.x, playerSpawn.y, 'dude');
     game.physics.arcade.enable(player);
     player.body.gravity.y = 1500;
     player.body.collideWorldBounds = true;
@@ -174,7 +176,9 @@ function create() {
 
     hud = new Hud(game);
     hud.registerTimeUpCallback(() =>
-        showEndGameOverlay('GAME OVER', 5000, 0xFF0000, 0.5, '#220000')
+        showEndRouteOverlay('GAME OVER', 5000, 0xFF0000, 0.5, '#220000', () => {
+            location.reload();
+        })
     );
 
     missiongiver.registerMissionCallback(() => {
@@ -195,12 +199,21 @@ function create() {
 	if(sadloc >= sadText.length) sadloc = sadText.length -1;  
         spawnFloatUpText(player.x + 50 , player.y - 30, sadText[sadloc], '#555555');
     });
-    objectives.registerDoneCallback(() =>
-        showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
-    );
 
     store = new Store(game, hud);
-    store.setVisible(true);
+    objectives.registerDoneCallback(() => {
+        hud.makeDormant();
+        store.show(() => {
+            player.position = playerSpawn;
+            missiongiver.destroy();
+            missiongiver = new MissionGiver(game, 200, 2872);
+            missiongiver.registerMissionCallback(() => {
+                objectives.beginRoute(player.position, [0]);
+                hud.startTimer(8.0);
+            });
+        });
+    });
+
 }
 
 function update() {
