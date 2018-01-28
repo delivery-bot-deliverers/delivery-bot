@@ -1,7 +1,3 @@
-function MakeBlock(sprites, parentGroup, X, Y, pos)
-{
-}
-
 function TileRow(amount, X, Y, BlockSize, Blocker) 
 {
 	for(var i = 0 ; i< amount; i++) 
@@ -71,19 +67,30 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 		[0,0,0,0,0,1,2,2,2,2,3,0,0,4],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[0,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[0,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		[0,0,0,0,0,0,0,0,0,0,0,0,0,0],
 		];
 
 	var plat2 = 
 		[
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
-		[5,2,2,2,2,2,0,0,0,0,0,0,0,4],
+		[5,2,2,2,2,3,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		[5,0,0,0,0,0,0,0,10,0,0,0,0,4],
 		[5,0,0,0,0,0,0,1,2,2,2,2,2,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		]; 
+
+	var plat3 = 
+		[
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,2,2,3,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
+		[5,0,0,0,0,0,0,0,0,0,1,2,2,4],
 		[5,0,0,0,0,0,0,0,0,0,0,0,0,4],
 		]; 
 
@@ -92,8 +99,10 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 		var p =	platforms.create(X, Y, sprites[Pos]);	
 		p.body.immovable = true;
 	}
+
 	var MakeBG = function(X,Y,Pos)
 	{
+return; 
 		var mePos = Pos;
 		if(mePos >0){
 			mePos = 1;
@@ -101,7 +110,7 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 		if(mePos <0){
 			mePos = 0;
 		}
-		game.add.image(X, Y, bgSprites[mePos]);	
+		game.add.renderTexture(X, Y, bgSprites[mePos]);	
 	}
 
 	var retlist = [[],[],[],[],[],[]];         
@@ -109,10 +118,36 @@ function MakePlatform(sprites, bgSprites, game, platforms )
 	var plooty = [plat,plat2,plat2,plat2,plat2,plat2,plat2];
 	var plooty2 = [plat,plat2];
 
-	var pts = placePlatformTiles(plooty,300,2700,25, MakeSprites,MakeBG);
-	MergeArrays(retlist, pts);
+	var randy1 = 5;
+	var loc = 300;  
+	var buildingHeight = 0; 
+	for(var i = 0 ; i < randy1; i++) 
+	{ 	
+		var building = [plat]; 
+		buildingHeight = plat.length * 25;
 
-	pts =placePlatformTiles(plooty2,700,2700,25, MakeSprites,MakeBG);
+		var randy2 = Math.random() * 10;
+		for(var ii = 0; ii< randy2; ii++) 
+		{
+			building.push(plat2);  
+			buildingHeight += (plat2.length * 25);
+		} 
+		if(randy2 > 7 ) {
+			var randy3 = Math.random() * 6;
+			for(var iii = 0; iii< randy3; iii++) 
+			{
+				building.push(plat3);  
+				buildingHeight += (plat3.length * 25);
+			} 
+		}
+
+		game.add.tileSprite(loc, 2950 - buildingHeight ,350, buildingHeight,bgSprites[0] );	
+
+		var pts = placePlatformTiles(building,loc,2760,25, MakeSprites,MakeBG);
+		MergeArrays(retlist, pts);
+		loc += (400 + (Math.random() * 200)); 
+	}
+
 	MergeArrays(retlist, pts);
 
 	return retlist;
