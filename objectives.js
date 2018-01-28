@@ -186,6 +186,7 @@ class Store {
 
         const items = [
             ['+Speed', 30, () => {
+                xspeed += 50;
             }],
             ['Reagan', 50, () => {
             }],

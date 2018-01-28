@@ -30,6 +30,7 @@ var land_sound;
 var hud;
 var store;
 var playerSpawn;
+var xspeed = 200;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -72,6 +73,7 @@ function preload() {
     game.load.image('Smoke2', 'assets/Smoke2.png');
     game.load.image('Smoke3', 'assets/Smoke3.png');
 
+    game.load.audio('song', ['assets/song.mp3']);
 
 }
 
@@ -114,6 +116,10 @@ var sadText = ["Well that took forever",
                "I am not mad.. just sad"];
 
 function create() {
+    const music = game.add.audio('song');
+    music.play();
+    music.mute = false;
+
     game.stage.backgroundColor = '#9ce5fb';
 
     deliver_sound = game.add.audio('Deliver');
@@ -239,7 +245,7 @@ function update() {
 	    Upgrades[i].update(press_Z,cursors,press_Space);
     } 
 
-    const xspeed = 200;
+    xspeed = 200;
     const xaccel = xspeed * 2.69;
     if (cursors.left.isDown) {
         if(player.body.acceleration.x > 0) 
