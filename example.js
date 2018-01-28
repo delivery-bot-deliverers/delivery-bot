@@ -46,14 +46,18 @@ function preload() {
     game.load.audio('GetJob', 'assets/GetJob.wav');
     game.load.audio('Jump', 'assets/Jump.wav');
     game.load.audio('Land', 'assets/Land.wav');
-}
 
+    game.load.image('Smoke1', 'assets/Smoke1.png');
+    game.load.image('Smoke2', 'assets/Smoke2.png');
+    game.load.image('Smoke3', 'assets/Smoke3.png');
+}
 
 function create() {
 
     game.stage.backgroundColor = '#9ce5fb';
 
     deliver_sound = game.add.audio('Deliver');
+    game.load.audio('Smoke1', 'assets/Smoke1.png');
     drop_bomb_sound = game.add.audio('DropBomb');
     explosion_sound = game.add.audio('Explosion');
     get_job_sound = game.add.audio('GetJob');
@@ -85,7 +89,7 @@ function create() {
     player.facing = "Right";
     player.boosting = false;
 
-    var booster = new Upgrade_Booster(game, player,'Rocket',20,20 );  
+    var booster = new Upgrade_Booster(game, player,'Rocket',20,20,['Smoke1','Smoke2','Smoke3'] );  
     Upgrades = [booster];
 	
     game.world.bringToTop(player); 
@@ -137,29 +141,28 @@ function update() {
         	player.body.velocity.x = 100; 
 
         player.body.acceleration.x = 350;
-        player.animations.play('right');
+	player.animations.play('right');
 	player.facing = "Right";
+    }else if(hitPlatform && player.body.velocity.x != 0) {
+	    if( player.body.velocity.x > 0 ){ 
+		    player.body.velocity.x -= 50;
+		    if(player.body.velocity.x < 0 ){ 
+			    player.body.acceleration.x = 0;
+			    player.animations.stop();
+			    player.frame = 4;
+			    player.body.velocity.x = 0;
+		    } 
+	    }
+	    if( player.body.velocity.x < 0 ) {
+		    player.body.velocity.x += 50;
+		    if(player.body.velocity.x > 0 ){ 
+			    player.body.acceleration.x = 0;
+			    player.animations.stop();
+			    player.frame = 4;
+			    player.body.velocity.x = 0;
+		    } 
+	    }
     }
-
-    if(hitPlatform && player.body.velocity.x != 0) {
-       if( player.body.velocity.x > 0 ) 
-	       player.body.acceleration.x -= 100;
-       if( player.body.velocity.x < 0 ) 
-	       player.body.acceleration.x += 10-;
-    }
- if(player.body.velocity.x == 0 ) {
-        player.animations.stop();
-        player.frame = 4;
-    }
- 
-/*
- else {
-	player.body.acceleration.x = 0;
-	player.body.velocity.x = 0;
-        player.animations.stop();
-        player.frame = 4;
-    }
-*/
 
     if (cursors.up.isDown && player.body.touching.down && hitPlatform) {
         player.body.velocity.y = -600;

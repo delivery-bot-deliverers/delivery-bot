@@ -1,5 +1,5 @@
 class Upgrade_Booster{
-	constructor(game, player, sprite, offX, offY) {
+	constructor(game, player, sprite, offX, offY, particles ) {
 		this.player = player; 
 		this.game = game; 	
 		this.sprite = game.add.sprite(0, 0, sprite);
@@ -8,6 +8,11 @@ class Upgrade_Booster{
 		this.offY = offY; 
 
 		this.CanBoost = true; 
+
+		this.emitter = game.add.emitter(game.world.centerX, game.world.centerY, 900);
+		this.emitter.makeParticles(particles);
+		this.emitter.setAlpha(0.5, 1, 3000);
+		this.emitter.setScale(.8, 2, .8, 2, 1000);
 
 	}
  
@@ -48,11 +53,16 @@ class Upgrade_Booster{
 			var yaccel = Math.cos(this.sprite.angle*Math.PI/180); 
 			var xaccel = Math.sin(this.sprite.angle*Math.PI/180); 
 
-			this.player.body.velocity.x = 10000 * xaccel;
-			this.player.body.velocity.y = 10000 * yaccel;
+			this.player.body.velocity.x = 2000 * xaccel;
+			this.player.body.velocity.y = -2000 * yaccel;
+			this.emitter.start(false, 3000, 20, 50);
 		}
+
 
 		this.sprite.x = player.body.x + this.offX;
 		this.sprite.y = player.body.y + this.offY;
+
+		this.emitter.x = player.body.x + this.offX;
+		this.emitter.y = player.body.y + this.offY;
 	}
 }
