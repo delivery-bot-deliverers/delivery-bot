@@ -9,6 +9,7 @@ class Upgrade_Booster{
 		this.Timer = game.time.create(false);  
 		this.Timer.loop(1000,this.timerUpdate); 
 		this.TimerCounter = 0;
+		this.Timer.start();
 	}
 
 	timerUpdate() 
@@ -18,21 +19,22 @@ class Upgrade_Booster{
 		{
 			this.Timer.stop();
 			this.CanBoost = true;
+			player.body.acceleration.x = 0;
+			player.body.acceleration.y = 0;
 		}
-
+		var accel = 400; 
 		if(this.sprite.angle == 270){
-			player.body.acceleration.x += 300;
+			player.body.acceleration.x += accel;
 		} 
 		else if(this.sprite.angle == 90){ 
-			player.body.acceleration.x -= 300;
+			player.body.acceleration.x -= accel;
 		}
 		else if(this.sprite.angle == 180){ 
-			player.body.acceleration.y -= 300;
+			player.body.acceleration.y += accel;
 		}
 		else if(this.sprite.angle == 0){
-			player.body.acceleration.y += 300;
+			player.body.acceleration.y -= accel;
 		}
-		this.pla
 	}
 
 	update(Key, cursors, press_Space){
@@ -54,14 +56,13 @@ class Upgrade_Booster{
 			{
 				this.sprite.angle = 1; 
 			}	
-
+			if(press_Space.isDown ){
+				this.CanBoost = false;
+				this.TimerCounter = 100;
+			}	
 		}
-		if(press_Space.isDown ){
-			this.sprite.angle = 30; 
-		//	this.CanBoost = false;
-		//	this.TimerCounter = 3;
-		//::wq	this.Timer.start(); 
-		}	
+		if(!this.CanBoost) 
+			this.timerUpdate();
 
 		this.sprite.x = player.body.x + this.offX;
 		this.sprite.y = player.body.y + this.offY;

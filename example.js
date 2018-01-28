@@ -70,7 +70,7 @@ function create() {
 	
     game.camera.follow(player); 	
 
-    press_Z =  game.input.keyboard.addKey(Phaser.Keyboard.Space); 
+    press_Z =  game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR); 
     press_Space = game.input.keyboard.addKey(Phaser.Keyboard.Z);
 
     objectives = new Objectives(game);
