@@ -74,7 +74,6 @@ function create() {
 	
     player = game.add.sprite(32, game.world.height - 150, 'dude');
     game.physics.arcade.enable(player);
-    player.body.bounce.y = 0.5;
     player.body.gravity.y = 1500;
     player.body.collideWorldBounds = true;
 
