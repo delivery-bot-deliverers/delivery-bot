@@ -13,6 +13,12 @@ var cursors;
 var score = 0;
 var objectives;
 var missiongiver;
+var deliver_sound;
+var drop_bomb_sound;
+var explosion_sound;
+var get_job_sound;
+var jump_sound;
+var land_sound;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -32,10 +38,25 @@ function preload() {
 
     game.load.image('exclamation', 'assets/exclamation.png');
     game.load.image('missiongiver', 'assets/missiongiver.png');
+
+    game.load.audio('Deliver', 'assets/Deliver.wav');
+    game.load.audio('DropBomb', 'assets/DropBomb.wav');
+    game.load.audio('Explosion', 'assets/Explosion.wav');
+    game.load.audio('GetJob', 'assets/GetJob.wav');
+    game.load.audio('Jump', 'assets/Jump.wav');
+    game.load.audio('Land', 'assets/Land.wav');
 }
 
 
 function create() {
+
+    deliver_sound = game.add.audio('Deliver');
+    drop_bomb_sound = game.add.audio('DropBomb');
+    explosion_sound = game.add.audio('Explosion');
+    get_job_sound = game.add.audio('GetJob');
+    jump_sound = game.add.audio('Jump');
+    land_sound = game.add.audio('Land');
+
     game.add.sprite(0, 0, 'star');
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.add.sprite(0, 0, 'sky');
