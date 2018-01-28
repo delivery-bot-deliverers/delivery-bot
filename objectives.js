@@ -153,6 +153,85 @@ class MissionGiver {
     }
 }
 
+class Store {
+    constructor(game, hud) {
+        this._group = game.add.group();
+        this._group.fixedToCamera = true;
+
+        const margin = 170;
+        this._gfx = game.make.graphics(0, 0);
+        this._group.add(this._gfx);
+
+        this._gfx.beginFill(0x000000, 0.5);
+        this._gfx.drawRoundedRect(margin, margin, game.scale.width - 2*margin, game.scale.height - 2*margin);
+
+        this._group.visible = false;
+
+        this._title = game.add.text(
+            margin + 30,
+            margin + 30,
+            'Store',
+            {'fill': '#FFFFFF'},
+            this._group
+        );
+
+        const items = [
+            ['+Speed', 30, () => {
+            }],
+            ['Reagan', 50, () => {
+            }],
+            ['Throw away money', 200, () => {
+            }]
+        ];
+
+        const buttons = [];
+        const rowY = margin + 70;
+        const rowYDelta = 50;
+        items.forEach(([name, cost, onClick], i) => {
+            const text = game.add.text(
+                margin + 60,
+                rowY + i * rowYDelta,
+                name + ': $' + cost,
+                {'fill': '#FFFFFF'},
+                this._group
+            );
+            text.inputEnabled = true;
+            text.events.onInputDown.add(() => {
+                if (hud.getDollars() - cost < 0) {
+                    spawnFloatUpText(game.input.worldX, game.input.worldY, 'Not enough money', '#AAAAAA');
+                } else {
+                    hud.addDollars(-cost);
+                    spawnFloatUpText(game.input.worldX, game.input.worldY, '- $'+cost.toString(), '#FF0000');
+                    onClick();
+                }
+            });
+            buttons.push(text);
+        });
+
+        const done = game.add.text(
+            margin + 350, 390, 'Done', {'fill': '#FFFFFF'}, this._group
+        );
+        done.inputEnabled = true;
+        done.events.onInputDown.add(() => {
+            this.setVisible(false);
+        });
+        buttons.push(done);
+
+        buttons.forEach(button => {
+            button.events.onInputOver.add(() => {
+                button.setStyle({'fill': '#AAAAAA'});
+            });
+            button.events.onInputOut.add(() => {
+                button.setStyle({'fill': '#FFFFFF'});
+            });
+        });
+    }
+
+    setVisible(bool) {
+        this._group.visible = bool;
+    }
+}
+
 class Hud {
     constructor(game) {
         this._group = game.add.group();
@@ -230,6 +309,10 @@ class Hud {
     addDollars(dollars) {
         this._dollars += dollars;
         this._dollarsText.text = 'Cash: $' + Math.round(this._dollars);
+    }
+
+    getDollars() {
+        return this._dollars;
     }
 
     registerTimeUpCallback(callback) {

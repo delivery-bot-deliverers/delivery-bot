@@ -28,6 +28,7 @@ var get_job_sound;
 var jump_sound;
 var land_sound;
 var hud;
+var store;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -91,19 +92,6 @@ function showEndGameOverlay(thestring, duration, bgColorNum, bgColorAlpha, textC
         location.reload();
     }, this);
 }
-
-function spawnFloatUpText(x, y, thestring, color) {
-    const durationMs = 1500;
-    const pixelsPerSecond = 30;
-    const text = game.add.text(x, y, thestring, {'fill': color});
-    text.update = () => {
-        text.y -= pixelsPerSecond * game.time.physicsElapsed;
-    };
-    game.time.events.add(durationMs, () => {
-        text.destroy();
-    }, this);
-}
-
 
 var sadText = ["Well that took forever",
     	       "eh.. thanks I guess",
@@ -212,6 +200,9 @@ function create() {
     objectives.registerDoneCallback(() =>
         showEndGameOverlay('YOU WON!', 5000, 0x0000FF, 0.5, '#000000')
     );
+
+    store = new Store(game, hud);
+    store.setVisible(true);
 }
 
 function update() {
