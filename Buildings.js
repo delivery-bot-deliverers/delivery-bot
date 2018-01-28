@@ -240,7 +240,7 @@ function MakePlatform(sprites, bgSprites, game, platforms, walls, BreakWalls)
 	var plooty = [plat,plat2,plat2,plat2,plat2,plat2,plat2];
 	var plooty2 = [plat,plat2];
 
-	var randy1 = 5;
+	var randy1 = 1;
 	var loc = 300;  
 	var buildingHeight = 0; 
 

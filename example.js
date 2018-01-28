@@ -165,8 +165,7 @@ function create() {
     player.boosting = false;
 
     var booster = new Upgrade_Booster(game, player,'Rocket',20,20,['Smoke1','Smoke2','Smoke3'] );  
-    var regan = new Upgrade_Regan(game, player,20,20);  
-    Upgrades = [booster, regan];
+    Upgrades = [booster];
 
     game.world.bringToTop(player); 
     game.camera.follow(player); 	
@@ -219,6 +218,7 @@ function create() {
             });
         });
     });
+    hud.addDollars(100);
 
 }
 

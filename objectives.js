@@ -189,6 +189,8 @@ class Store {
                 xspeed += 50;
             }],
             ['Reagan', 50, () => {
+                const regan = new Upgrade_Regan(game, player,20,20);  
+                Upgrades.push(regan);
             }],
             ['Throw away money', 200, () => {
             }]
