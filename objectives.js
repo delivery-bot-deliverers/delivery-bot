@@ -81,6 +81,62 @@ class Indicator {
     }
 }
 
+class MissionGiver {
+    constructor(game, x, y) {
+        this.sprite = game.add.sprite(x, y, 'missiongiver');
+        game.physics.arcade.enable(this.sprite);
+        this._exc = game.add.sprite(x, y - 40, 'exclamation');
+        this._exc_timer = game.time.create(false);
+        this._exc_timer.loop(300, () => {
+            this._exc.visible = !this._exc.visible;
+        }, this);
+        this.game = game;
+        this._exc_timer.start();
+
+        this._countdown = 5;
+        this._countdown_text = game.add.text(
+            0,
+            0,
+            this._countdown.toString(),
+            {'fill': '#FF0000'}
+        );
+        this._countdown_text.fixedToCamera = true;
+        this._countdown_text.cameraOffset = new Phaser.Point(
+            game.scale.width / 2,
+            game.scale.height / 2
+        );
+        this._countdown_text.anchor = new Phaser.Point(0.5, 0.5);
+        this._countdown_text.fontSize = 500;
+        this._countdown_text.visible = false;
+        this._countdown_timer = game.time.create(false);
+        this._countdown_timer.loop(1000, () => {
+            this._countdown_text.fontSize = 500;
+            this._countdown -= 1;
+            this._countdown_text.text = this._countdown.toString();
+            if (this._countdown == 0) {
+                this._countdown_timer.stop();
+                this._countdown_text.visible = false;
+            }
+        }, this);
+    }
+
+    update(game) {
+        if (this._countdown_timer.running) {
+            this._countdown_text.fontSize *= 0.98;
+        }
+    }
+
+    collidePlayer() {
+        if (this._countdown !== 0 &&
+                this.game.input.keyboard.isDown(Phaser.KeyCode.SPACEBAR)) {
+            this._exc.visible = false;
+            this._exc_timer.stop();
+            this._countdown_text.visible = true;
+            this._countdown_timer.start();
+        }
+    }
+}
+
 class Objectives {
     constructor(game) {
         this.group = game.add.group();

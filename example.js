@@ -12,6 +12,7 @@ var player;
 var cursors;
 var score = 0;
 var objectives;
+var missiongiver;
 
 function preload() {
     game.load.image('sky', 'assets/sky.png');
@@ -28,6 +29,9 @@ function preload() {
 
     game.load.image('wallB', 'assets/Wall1_Background.png');
     game.load.image('wallB2', 'assets/Wall1_Background1.png');
+
+    game.load.image('exclamation', 'assets/exclamation.png');
+    game.load.image('missiongiver', 'assets/missiongiver.png');
 }
 
 
@@ -59,15 +63,20 @@ function create() {
     cursors = game.input.keyboard.createCursorKeys();
 
     game.camera.follow(player); 	
+
+    missiongiver = new MissionGiver(game, 200, 2872);
+
     objectives = new Objectives(game);
     objectives.populate(result);
 }
 
 function update() {
     const hitPlatform = game.physics.arcade.collide(player, platforms);
-    game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
+    game.physics.arcade.overlap(player, objectives.group, objectives.collidePlayer, null, this);
+    game.physics.arcade.overlap(player, missiongiver.sprite, missiongiver.collidePlayer, null, missiongiver);
 
     objectives.update(game);
+    missiongiver.update(game);
 
     if (cursors.left.isDown) {
         if(player.body.acceleration.x > 0) 
