@@ -34,8 +34,11 @@ class Indicator {
 
     update(game) {
         if (this._target === null) {
+            this._gfx.visible = false;
             return;
         }
+
+        this._gfx.visible = true;
 
         // in viewport coordinates
         const targetX = this._target.centerX - game.camera.x;
@@ -76,6 +79,7 @@ class Indicator {
         }
     }
 
+    /// Note target may be set to null to hide indicator.
     setTarget(target) {
         this._target = target;
     }
@@ -109,20 +113,23 @@ class MissionGiver {
         this._countdown_text.fontSize = 500;
         this._countdown_text.visible = false;
         this._countdown_timer = game.time.create(false);
-        this._countdown_timer.loop(1000, () => {
+        this._mission_callback = () => {};
+        this._countdown_timer.loop(500, () => {
             this._countdown_text.fontSize = 500;
             this._countdown -= 1;
             this._countdown_text.text = this._countdown.toString();
             if (this._countdown == 0) {
                 this._countdown_timer.stop();
                 this._countdown_text.visible = false;
+                this._mission_callback.call(this._callbackcontext);
             }
         }, this);
+        this._callbackcontext = this;
     }
 
     update(game) {
         if (this._countdown_timer.running) {
-            this._countdown_text.fontSize *= 0.98;
+            this._countdown_text.fontSize *= 0.95;
         }
     }
 
@@ -135,6 +142,11 @@ class MissionGiver {
             this._countdown_timer.start();
         }
     }
+
+    registerMissionCallback(callback, context) {
+        this._mission_callback = callback;
+        this._callback_context = context;
+    }
 }
 
 class Objectives {
@@ -142,14 +154,16 @@ class Objectives {
         this.group = game.add.group();
         this.group.enableBody = true;
         this.indicator = new Indicator(game);
+        this.route = [];
+        this.route_cursor = null;
     }
 
     update(game) {
-        if (this.group.children.length == 0) {
-            return;
+        if (this.route_cursor === null) {
+            this.indicator.setTarget(null);
+        } else {
+            this.indicator.setTarget(this.route[this.route_cursor]);
         }
-
-        this.indicator.setTarget(this.group.children[0]);
         this.indicator.update(game);
     }
 
@@ -160,17 +174,53 @@ class Objectives {
         this.group.children.forEach(sprite => {
             sprite.destroy();
         });
-        pointsByCategory.forEach(category => {
-            category.forEach((point, difficulty) => {
+        pointsByCategory.forEach((category, difficulty) => {
+            category.forEach(point => {
                 const child = this.group.create(point.x, point.y, 'star');
-                child.body.gravity.y = 20;
-                child.body.bounce.y = 1;
                 child.difficulty = difficulty;
             });
         });
     }
 
-    collidePlayer() {
-        // do something
+    // Compute this.route, the objectives that need to be visited in order.
+    // startpoint: Phaser.Point: current player position
+    // enabled_difficulties: Array[int]: the difficulty levels to include
+    beginRoute(startpoint, enabled_difficulties) {
+        const available = this.group.children.filter(child =>
+            enabled_difficulties.includes(child.difficulty)
+        );
+
+        const route = [];
+        let from = startpoint;
+        while (available.length > 0) {
+            let bestdist = Infinity;
+            let bestindex = null;
+            available.forEach((to, index) => {
+                const deltaX = from.x - to.x;
+                const deltaY = from.y - to.y;
+                const dist = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+                if (dist < bestdist) {
+                    bestdist = dist;
+                    bestindex = index;
+                }
+            });
+
+            route.push(available[bestindex]);
+            from = available[bestindex].position;
+            available.splice(bestindex, 1);
+        }
+
+        this.route = route;
+        this.route_cursor = 0;
+    }
+
+    collidePlayer(player, objective) {
+        if (this.route_cursor !== null && objective === this.route[this.route_cursor]) {
+            if (this.route_cursor + 1 < this.route.length) {
+                this.route_cursor += 1;
+            } else {
+                this.route_cursor = null;
+            }
+        }
     }
 }

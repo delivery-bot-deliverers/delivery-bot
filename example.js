@@ -1,9 +1,8 @@
-const game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+const game = new Phaser.Game(800, 600, Phaser.CANVAS, '', {
     preload: preload,
     create: create,
     update: update
 });
-
 
 var platforms;
 var player;
@@ -51,6 +50,8 @@ function preload() {
 
 
 function create() {
+
+    game.stage.backgroundColor = '#9ce5fb';
 
     deliver_sound = game.add.audio('Deliver');
     drop_bomb_sound = game.add.audio('DropBomb');
@@ -100,6 +101,10 @@ function create() {
 
     objectives = new Objectives(game);
     objectives.populate(result);
+
+    missiongiver.registerMissionCallback(() => {
+        objectives.beginRoute(player.position, [0]);
+    }, missiongiver);
 }
 
 function update() {
@@ -110,7 +115,8 @@ function update() {
         land_sound.play();
     }
 
-    game.physics.arcade.overlap(player, objectives.group, objectives.onPlayerCollide, null, this);
+    game.physics.arcade.overlap(player, objectives.group, objectives.collidePlayer, null, objectives);
+    game.physics.arcade.overlap(player, missiongiver.sprite, missiongiver.collidePlayer, null, missiongiver);
 
     objectives.update(game);
     missiongiver.update(game);
