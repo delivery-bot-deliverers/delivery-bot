@@ -91,7 +91,7 @@ class MissionGiver {
         game.physics.arcade.enable(this.sprite);
         this.sprite.animations.add('idle', [0, 1], 4, true);
         this.sprite.animations.play('idle');
-        this._exc = game.add.sprite(x, y - 40, 'exclamation');
+        this._exc = game.add.sprite(x + 4, y - 20, 'exclamation');
         this._exc_timer = game.time.create(false);
         this._exc_timer.loop(300, () => {
             this._exc.visible = !this._exc.visible;
@@ -99,7 +99,7 @@ class MissionGiver {
         this.game = game;
         this._exc_timer.start();
 
-        this._countdown = 5;
+        this._countdown = 3;
         this._countdown_text = game.add.text(
             0,
             0,
@@ -123,10 +123,9 @@ class MissionGiver {
             if (this._countdown == 0) {
                 this._countdown_timer.stop();
                 this._countdown_text.visible = false;
-                this._mission_callback.call(this._callbackcontext);
+                this._mission_callback();
             }
         }, this);
-        this._callbackcontext = this;
     }
 
     update(game) {
@@ -145,9 +144,8 @@ class MissionGiver {
         }
     }
 
-    registerMissionCallback(callback, context) {
+    registerMissionCallback(callback) {
         this._mission_callback = callback;
-        this._callback_context = context;
     }
 }
 
@@ -158,20 +156,20 @@ class Hud {
 
         this._group.cameraOffset = new Phaser.Point(game.scale.width - 200.0, 20.0);
 
-        const textstyle = {};
-
         this._mode = 'dormant';
-        this._timeLeftText = game.add.text(0, 0, '', textstyle, this._group),
+        this._timeLeftText = game.add.text(0, 0, '', {'fill': '#000000'}, this._group);
         this._secondsLeft = 0.0;
         this._warningSeconds = 0.0;
+        this._timeUpCallback = () => {};
     }
 
     update(game) {
         if (this._mode === 'mission' && this._secondsLeft === 0) {
             this._mode = 'warning';
-            this._warningSeconds = 2.0;
+            this._warningSeconds = 1.0;
         }
         if (this._mode === 'warning' && this._warningSeconds === 0) {
+            this._timeUpCallback();
             this._mode = 'dormant';
         }
 
@@ -207,6 +205,10 @@ class Hud {
             this._secondsLeft += seconds;
         }
     }
+
+    registerTimeUpCallback(callback) {
+        this._timeUpCallback = callback;
+    }
 }
 
 class Objectives {
@@ -218,6 +220,7 @@ class Objectives {
         this.routedists = [];
         this.route_cursor = null;
         this._collectCallback = () => {};
+        this._doneCallback = () => {};
     }
 
     update(game) {
@@ -285,6 +288,7 @@ class Objectives {
                 this.route_cursor += 1;
                 this._collectCallback(this.routedists[this.route_cursor]);
             } else {
+                this._doneCallback();
                 this.route_cursor = null;
             }
         }
@@ -294,5 +298,9 @@ class Objectives {
     // the euclidean distance to the next goal.
     registerCollectCallback(callback) {
         this._collectCallback = callback;
+    }
+
+    registerDoneCallback(callback) {
+        this._doneCallback = callback;
     }
 }
